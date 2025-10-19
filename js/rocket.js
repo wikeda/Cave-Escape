@@ -159,16 +159,47 @@ export class Rocket {
   }
 
   /**
-   * 炎エフェクトを描画（シンプルな形に戻す）
+   * 炎エフェクトを描画（1秒周期で色変化：赤→オレンジ・黄→青）
    */
   drawFlame(ctx) {
     ctx.save();
     ctx.shadowBlur = 0;
     
+    // 1秒周期の色変化（0-1の範囲で循環）
+    const time = Date.now() * 0.001; // 1秒 = 1000ms
+    const colorPhase = (Math.sin(time * Math.PI * 2) + 1) / 2; // 0-1の範囲で滑らかに変化
+    
+    // 色の補間計算
+    // 0.0-0.33: 赤 → オレンジ・黄
+    // 0.33-0.66: オレンジ・黄 → 青
+    // 0.66-1.0: 青 → 赤
+    
+    let r, g, b;
+    if (colorPhase < 0.33) {
+      // 赤 → オレンジ・黄
+      const t = colorPhase / 0.33;
+      r = Math.floor(255 * (1 - t) + 255 * t);
+      g = Math.floor(0 * (1 - t) + 180 * t);
+      b = Math.floor(0 * (1 - t) + 70 * t);
+    } else if (colorPhase < 0.66) {
+      // オレンジ・黄 → 青
+      const t = (colorPhase - 0.33) / 0.33;
+      r = Math.floor(255 * (1 - t) + 0 * t);
+      g = Math.floor(180 * (1 - t) + 0 * t);
+      b = Math.floor(70 * (1 - t) + 255 * t);
+    } else {
+      // 青 → 赤
+      const t = (colorPhase - 0.66) / 0.34;
+      r = Math.floor(0 * (1 - t) + 255 * t);
+      g = Math.floor(0 * (1 - t) + 0 * t);
+      b = Math.floor(255 * (1 - t) + 0 * t);
+    }
+    
     const gradient = ctx.createLinearGradient(this.x - 36, this.y, this.x - 10, this.y);
-    gradient.addColorStop(0, 'rgba(255,180,70,0.05)');
-    gradient.addColorStop(0.6, 'rgba(255,210,110,0.75)');
-    gradient.addColorStop(1, 'rgba(255,230,150,0.95)');
+    gradient.addColorStop(0, `rgba(${r},${g},${b},0.05)`);
+    gradient.addColorStop(0.6, `rgba(${r},${Math.floor(g * 1.2)},${Math.floor(b * 1.2)},0.75)`);
+    gradient.addColorStop(1, `rgba(${r},${Math.floor(g * 1.3)},${Math.floor(b * 1.3)},0.95)`);
+    
     ctx.fillStyle = gradient;
     ctx.beginPath();
     ctx.moveTo(this.x - 18, this.y - 7);
