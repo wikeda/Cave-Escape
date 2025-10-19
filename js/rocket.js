@@ -30,7 +30,7 @@ export class Rocket {
       { x: 6, y: -4, width: 8, height: 6, type: 'main' },      // メインコックピットのみ
     ];
     
-    // エンジン部分の形状（台形）- 横向き
+    // エンジン部分の形状（台形）- 縦向き（短い辺がロケット側、長い辺が炎側）
     this.engines = [
       { x: -20, y: -6, width: 12, height: 12, type: 'main' },  // メインエンジン（台形）
     ];
@@ -68,14 +68,14 @@ export class Rocket {
       ctx.shadowBlur = 15;
     }
     
-    // 機体のグラデーション（銀色）
+    // 機体のグラデーション（暗い銀色）
     const gradient = ctx.createLinearGradient(
       this.x - 10, this.y - 10, 
       this.x + 10, this.y + 10
     );
-    gradient.addColorStop(0, this.thrusting ? '#e8f4fd' : '#f5f5f5');  // 明るい銀色
-    gradient.addColorStop(0.5, this.thrusting ? '#bdbdbd' : '#9e9e9e'); // 中央の銀色
-    gradient.addColorStop(1, this.thrusting ? '#757575' : '#616161');   // 暗い銀色
+    gradient.addColorStop(0, this.thrusting ? '#d1d5db' : '#9ca3af');  // 明るい銀色
+    gradient.addColorStop(0.5, this.thrusting ? '#6b7280' : '#4b5563'); // 中央の銀色
+    gradient.addColorStop(1, this.thrusting ? '#374151' : '#1f2937');   // 暗い銀色
     
     ctx.fillStyle = gradient;
     ctx.beginPath();
@@ -96,8 +96,8 @@ export class Rocket {
     ctx.closePath();
     ctx.fill();
     
-    // 機体のエッジ（銀色系）
-    ctx.strokeStyle = this.thrusting ? '#90a4ae' : '#78909c';
+    // 機体のエッジ（暗い銀色系）
+    ctx.strokeStyle = this.thrusting ? '#6b7280' : '#4b5563';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(poly[0].x, poly[0].y);
@@ -123,13 +123,13 @@ export class Rocket {
       const radiusY = window.height / 2;
       
       // 窓のフレーム（楕円形）
-      ctx.fillStyle = '#2c3e50';
+      ctx.fillStyle = '#1a1a2e';
       ctx.beginPath();
       ctx.ellipse(x + radiusX, y + radiusY, radiusX + 1, radiusY + 1, 0, 0, Math.PI * 2);
       ctx.fill();
       
-      // 窓ガラス（楕円形）
-      ctx.fillStyle = '#87ceeb';
+      // 窓ガラス（楕円形）- 暗い紺色
+      ctx.fillStyle = '#16213e';
       ctx.beginPath();
       ctx.ellipse(x + radiusX, y + radiusY, radiusX, radiusY, 0, 0, Math.PI * 2);
       ctx.fill();
@@ -165,13 +165,13 @@ export class Rocket {
       gradient.addColorStop(0.5, '#34495e'); // 中間
       gradient.addColorStop(1, '#2c3e50');   // 暗い金属
       
-      // 台形の描画
+      // 台形の描画（90度回転：短い辺がロケット側、長い辺が炎側）
       ctx.fillStyle = gradient;
       ctx.beginPath();
       ctx.moveTo(x, y);                    // 左上
-      ctx.lineTo(x + width, y);            // 右上
-      ctx.lineTo(x + width * 0.8, y + height); // 右下（内側に傾斜）
-      ctx.lineTo(x + width * 0.2, y + height); // 左下（内側に傾斜）
+      ctx.lineTo(x + width * 0.2, y + height * 0.2); // 右上（短い辺）
+      ctx.lineTo(x + width * 0.8, y + height * 0.8); // 右下（長い辺）
+      ctx.lineTo(x, y + height);           // 左下
       ctx.closePath();
       ctx.fill();
       
@@ -179,9 +179,9 @@ export class Rocket {
       ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
       ctx.beginPath();
       ctx.moveTo(x + 2, y + 2);
-      ctx.lineTo(x + width * 0.6, y + 2);
-      ctx.lineTo(x + width * 0.5, y + height * 0.7);
-      ctx.lineTo(x + width * 0.3, y + height * 0.7);
+      ctx.lineTo(x + width * 0.3, y + height * 0.3);
+      ctx.lineTo(x + width * 0.6, y + height * 0.6);
+      ctx.lineTo(x + 2, y + height * 0.8);
       ctx.closePath();
       ctx.fill();
       
@@ -190,9 +190,9 @@ export class Rocket {
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.moveTo(x, y);
-      ctx.lineTo(x + width, y);
-      ctx.lineTo(x + width * 0.8, y + height);
-      ctx.lineTo(x + width * 0.2, y + height);
+      ctx.lineTo(x + width * 0.2, y + height * 0.2);
+      ctx.lineTo(x + width * 0.8, y + height * 0.8);
+      ctx.lineTo(x, y + height);
       ctx.closePath();
       ctx.stroke();
     });
