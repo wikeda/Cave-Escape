@@ -111,11 +111,19 @@ export class Game {
   setThrust(on) {
     this.inputThrust = on;
     this.rocket.setThrust(on);
+    
+    // エンジン音の制御
+    if (on && this.state === 'playing') {
+      soundManager.startEngine();
+    } else {
+      soundManager.stopEngine();
+    }
   }
 
   togglePause() {
     if (this.state === 'playing') {
       this.state = 'paused';
+      soundManager.stopEngine();  // 一時停止時にエンジン音を停止
     } else if (this.state === 'paused') {
       this.state = 'playing';
       this.needsClockReset = true;
@@ -128,6 +136,7 @@ export class Game {
     this.rocket.setThrust(false);
     this.state = 'playing';
     this.needsClockReset = true;
+    soundManager.stopEngine();  // ゲーム開始時にエンジン音を確実に停止
     soundManager.playStart();
     if (navigator.vibrate) navigator.vibrate([15, 30, 15]);
   }
@@ -135,6 +144,7 @@ export class Game {
   restart() {
     this.state = 'title';
     this.stageIndex = 0;
+    soundManager.stopEngine();  // エンジン音を停止
     this._setupStage({ keepRocket: false, resetRun: true });
   }
 
@@ -147,6 +157,7 @@ export class Game {
       this.rocketVisible = true;
       this.particles.clear();
       this.recordBestDistance();
+      soundManager.stopEngine();  // エンジン音を停止
       soundManager.playStageClear();
       if (navigator.vibrate) navigator.vibrate([20, 40, 80]);
       return;
@@ -200,6 +211,7 @@ export class Game {
         this.rocketVisible = false;
       }
       this.recordBestDistance();
+      soundManager.stopEngine();  // エンジン音を停止
       soundManager.playGameOver();
       if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
       return;
