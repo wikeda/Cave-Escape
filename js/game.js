@@ -66,6 +66,7 @@ class Game {
         this.gameState = 'playing';
         this.isRunning = true;
         this.lastTime = performance.now();
+        if (this.ui) { this.ui.showGame(); }
         this.gameLoop();
         this.audio.playEngine();
     }
@@ -270,6 +271,4 @@ class Game {
 }
 
 // ゲームインスタンスを作成（DOM読み込み後）
-document.addEventListener('DOMContentLoaded', () => {
-    window.game = new Game();
-});
+// Game instance is created in main.js
