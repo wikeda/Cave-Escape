@@ -1,89 +1,37 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cave-Escape</title>
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        /* minimal fallback if CSS fails */
-        .hidden { display: none; }
-        body { background: #111; color: #fff; font-family: Arial, sans-serif; }
-        #gameContainer { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; }
-        .screen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; }
-        .gameButton { padding: 10px 20px; border-radius: 6px; border: 0; background: #4ecdc4; color: #111; font-weight: bold; cursor: pointer; }
-        .controls { opacity: 0.9; }
-    </style>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; media-src 'self';">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cave-Escape</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    <div id="gameContainer">
-        <!-- Title screen -->
-        <div id="titleScreen" class="screen">
-            <h1>Cave-Escape</h1>
-            <p>洞窟を進むロケットのワンボタンアクションゲーム</p>
-            <div class="controls">
-                <p>操作方法: スペースキーでロケットを上昇</p>
-                <p>目標: 壁に当たらずに洞窟を進む</p>
-            </div>
-            <button id="startButton" class="gameButton">ゲーム開始</button>
-        </div>
-
-        <!-- Game screen -->
-        <div id="gameScreen" class="screen hidden">
-            <canvas id="gameCanvas" width="800" height="600"></canvas>
-            <div id="gameUI">
-                <div id="score">距離: 0 km</div>
-                <div id="stage">ステージ: 1</div>
-                <div id="performanceInfo"></div>
-            </div>
-        </div>
-
-        <!-- Game Over screen -->
-        <div id="gameOverScreen" class="screen hidden">
-            <h2>ゲームオーバー</h2>
-            <div id="finalScore">最終スコア: 0 km</div>
-            <div id="finalStage">到達ステージ: 1</div>
-            <button id="restartButton" class="gameButton">リスタート</button>
-            <button id="titleButton" class="gameButton">タイトルに戻る</button>
-        </div>
-
-        <!-- Stage Clear screen -->
-        <div id="stageClearScreen" class="screen hidden">
-            <h2>ステージクリア！</h2>
-            <div id="clearScore">スコア: 0 km</div>
-            <div id="clearStage">クリアステージ: 1</div>
-            <button id="nextStageButton" class="gameButton">次のステージ</button>
-            <button id="titleButton2" class="gameButton">タイトルに戻る</button>
-        </div>
-
-        <!-- All Clear screen -->
-        <div id="allClearScreen" class="screen hidden">
-            <h2>全ステージクリア！</h2>
-            <div id="totalScore">総合スコア: 0 km</div>
-            <p>おめでとうございます！</p>
-            <button id="playAgainButton" class="gameButton">もう一度プレイ</button>
-            <button id="titleButton3" class="gameButton">タイトルに戻る</button>
-        </div>
+  <div id="gameContainer">
+    <!-- タイトル画面 -->
+    <div id="titleScreen" class="screen">
+      <h1>Cave-Escape</h1>
+      <p>洞窟を進むロケットのワンボタンアクションゲーム</p>
+      <div class="controls">
+        <p>操作: スペースキーで上昇します</p>
+        <p>目標: 壁に当たらないように進みましょう</p>
+      </div>
+      <button id="startButton" class="gameButton">ゲーム開始</button>
     </div>
 
-    <!-- Audio -->
-    <audio id="explosionSound" preload="auto">
-        <source src="assets/sounds/explosion.wav" type="audio/wav">
-    </audio>
-    <audio id="engineSound" preload="auto" loop>
-        <source src="assets/sounds/engine.wav" type="audio/wav">
-    </audio>
+    <!-- ゲーム画面 -->
+    <div id="gameScreen" class="screen hidden">
+      <canvas id="gameCanvas" width="800" height="600"></canvas>
+      <div id="gameUI">
+        <div id="score">距離: 0 km</div>
+        <div id="stage">ステージ: 1</div>
+      </div>
+    </div>
+  </div>
 
-    <!-- Scripts -->
-    <script src="js/audio.js"></script>
-    <script src="js/particle.js"></script>
-    <script src="js/rocket.js"></script>
-    <script src="js/cave.js"></script>
-    <script src="js/stage.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/game.js"></script>
-    <script src="js/main.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
 </body>
+<!-- Copyright headers intentionally omitted -->
 </html>
 
