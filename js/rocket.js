@@ -176,29 +176,29 @@ export class Rocket {
       // クリック中：推力開始からの経過時間で色変化
       const currentTime = Date.now() * 0.001;
       const thrustDuration = currentTime - this.thrustStartTime;
-      const colorPhase = Math.min(thrustDuration / 1.0, 1.0); // 0-1の範囲で1.0秒で完了、その後1.0で固定
+      const colorPhase = Math.min(thrustDuration / 0.8, 1.0); // 0-1の範囲で0.8秒で完了、その後1.0で固定
       
       // 色の補間計算
-      // 0.0-0.3秒: 赤 → オレンジ
-      // 0.3-0.6秒: オレンジ → 黄
-      // 0.6-1.0秒: 黄 → 青
-      // 1.0秒以降: 青のまま
+      // 0.0-0.2秒: 赤 → オレンジ
+      // 0.2-0.4秒: オレンジ → 黄
+      // 0.4-0.8秒: 黄 → 青
+      // 0.8秒以降: 青のまま
       
-      if (colorPhase < 0.3) {
-        // 赤 → オレンジ (0.0-0.3秒)
-        const t = colorPhase / 0.3;
+      if (colorPhase < 0.25) {
+        // 赤 → オレンジ (0.0-0.2秒)
+        const t = colorPhase / 0.25;
         r = Math.floor(255 * (1 - t) + 255 * t);
         g = Math.floor(0 * (1 - t) + 140 * t);
         b = Math.floor(0 * (1 - t) + 0 * t);
-      } else if (colorPhase < 0.6) {
-        // オレンジ → 黄 (0.3-0.6秒)
-        const t = (colorPhase - 0.3) / 0.3;
+      } else if (colorPhase < 0.5) {
+        // オレンジ → 黄 (0.2-0.4秒)
+        const t = (colorPhase - 0.25) / 0.25;
         r = Math.floor(255 * (1 - t) + 255 * t);
         g = Math.floor(140 * (1 - t) + 255 * t);
         b = Math.floor(0 * (1 - t) + 0 * t);
       } else {
-        // 黄 → 青 (0.6-1.0秒、その後青のまま)
-        const t = (colorPhase - 0.6) / 0.4;
+        // 黄 → 青 (0.4-0.8秒、その後青のまま)
+        const t = (colorPhase - 0.5) / 0.5;
         r = Math.floor(255 * (1 - t) + 0 * t);
         g = Math.floor(255 * (1 - t) + 0 * t);
         b = Math.floor(0 * (1 - t) + 255 * t);
