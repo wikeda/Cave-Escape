@@ -39,8 +39,8 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  padding: 32px 24px 36px;
+  justify-content: center;
+  padding: 32px 24px;
   gap: 16px;
   pointer-events: none;
   z-index: 5;
