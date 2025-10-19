@@ -6,7 +6,6 @@ import { UI } from './ui.js';
 const canvas = document.getElementById('game');
 const overlay = document.getElementById('overlay');
 const hudExtra = document.getElementById('hud-extra');
-const pauseBtn = document.getElementById('pause-btn');
 
 // キャンバスサイズの設定
 canvas.width = LOGICAL_WIDTH;
@@ -50,11 +49,6 @@ canvas.addEventListener('touchstart', (e) => { e.preventDefault(); inputDown(); 
 canvas.addEventListener('touchend', (e) => { e.preventDefault(); inputUp(); }, { passive: false });
 canvas.addEventListener('touchcancel', (e) => { e.preventDefault(); inputUp(); }, { passive: false });
 
-if (pauseBtn) {
-  pauseBtn.addEventListener('click', () => {
-    if (game.state === 'playing') game.togglePause();
-  });
-}
 
 overlay.addEventListener('pointerdown', (e) => {
   const btn = e.target.closest('.overlay-button');
@@ -95,9 +89,6 @@ function handleAction(action) {
     case 'start':
       if (game.state === 'title') game.start();
       break;
-    case 'resume':
-      if (game.state === 'paused') game.togglePause();
-      break;
     case 'restart':
       game.restart();
       break;
@@ -122,8 +113,6 @@ overlay.addEventListener('pointerup', (e) => {
   if (!overlay.classList.contains('interactive')) return;
   if (game.state === 'title') {
     handleAction('start');
-  } else if (game.state === 'paused') {
-    handleAction('resume');
   }
 });
 
@@ -169,7 +158,6 @@ function frame(now) {
       '操作: 画面をタップ/クリックで上昇・離して下降',
       `ベスト距離: ${game.formattedBestDistance()} km`
     ]);
-    pauseBtn?.classList.add('hidden');
   } else if (game.state === 'playing') {
     while (acc >= dt) { game.updateFrame(dt); acc -= dt; }
     game.draw();
@@ -180,24 +168,6 @@ function frame(now) {
       `累計距離: ${game.formattedCurrentDistance()} km`,
       `ベスト距離: ${game.formattedBestDistance()} km`
     ]);
-    pauseBtn?.classList.remove('hidden');
-  } else if (game.state === 'paused') {
-    game.draw();
-    setOverlay([
-      `<div class="overlay-panel">
-        <h1>一時停止中</h1>
-        <p>再開するかタイトルへ戻るか選択してください。</p>
-        <div class="overlay-button-group">
-          <button class="overlay-button" data-action="resume">再開</button>
-          <button class="overlay-button" data-action="restart">タイトルへ戻る</button>
-        </div>
-      </div>`
-    ], { interactive: true });
-    setHudExtra([
-      `累計距離: ${game.formattedCurrentDistance()} km`,
-      `ベスト距離: ${game.formattedBestDistance()} km`
-    ]);
-    pauseBtn?.classList.add('hidden');
   } else if (game.state === 'gameover') {
     game.draw();
     const distance = game.formattedCurrentDistance();
@@ -217,7 +187,6 @@ function frame(now) {
       `今回の距離: ${distance} km`,
       `ベスト距離: ${game.formattedBestDistance()} km`
     ]);
-    pauseBtn?.classList.add('hidden');
   } else if (game.state === 'gameclear') {
     game.draw();
     const distance = game.formattedCurrentDistance();
@@ -236,7 +205,6 @@ function frame(now) {
       `クリア距離: ${game.formattedCurrentDistance()} km`,
       `ベスト距離: ${game.formattedBestDistance()} km`
     ]);
-    pauseBtn?.classList.add('hidden');
   }
 
   requestAnimationFrame(frame);

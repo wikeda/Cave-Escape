@@ -120,15 +120,6 @@ export class Game {
     }
   }
 
-  togglePause() {
-    if (this.state === 'playing') {
-      this.state = 'paused';
-      soundManager.stopEngine();  // 一時停止時にエンジン音を停止
-    } else if (this.state === 'paused') {
-      this.state = 'playing';
-      this.needsClockReset = true;
-    }
-  }
 
   start() {
     this.stageIndex = 0;
