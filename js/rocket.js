@@ -11,36 +11,36 @@ export class Rocket {
     this.vy = 0;  // Y方向の速度
     this.thrusting = false;  // 推力状態
     
-    // 機体の基本形状（流線形のロケット）
+    // 機体の基本形状（流線形のロケット）- サイズを2倍に拡大
     this.hull = [
-      { x: 20, y: 0 },     // 先端
-      { x: 8, y: -8 },     // 上側（コックピット部分）
-      { x: 2, y: -10 },    // 上側（機体中央）
-      { x: -8, y: -8 },    // 上側（翼接続部）
-      { x: -15, y: -4 },   // 上側（エンジン部）
-      { x: -18, y: 0 },    // 後端中央
-      { x: -15, y: 4 },    // 下側（エンジン部）
-      { x: -8, y: 8 },     // 下側（翼接続部）
-      { x: 2, y: 10 },     // 下側（機体中央）
-      { x: 8, y: 8 },      // 下側（コックピット部分）
+      { x: 40, y: 0 },     // 先端
+      { x: 16, y: -16 },   // 上側（コックピット部分）
+      { x: 4, y: -20 },    // 上側（機体中央）
+      { x: -16, y: -16 },  // 上側（翼接続部）
+      { x: -30, y: -8 },   // 上側（エンジン部）
+      { x: -36, y: 0 },    // 後端中央
+      { x: -30, y: 8 },    // 下側（エンジン部）
+      { x: -16, y: 16 },   // 下側（翼接続部）
+      { x: 4, y: 20 },     // 下側（機体中央）
+      { x: 16, y: 16 },    // 下側（コックピット部分）
     ];
     
-    // 窓の形状（楕円形のコックピット）
+    // 窓の形状（楕円形のコックピット）- サイズを2倍に拡大
     this.windows = [
-      { x: 6, y: -6, width: 8, height: 6, type: 'main' },      // メインコックピット
-      { x: 10, y: -2, width: 4, height: 3, type: 'side' },     // サイド窓
+      { x: 12, y: -12, width: 16, height: 12, type: 'main' },   // メインコックピット
+      { x: 20, y: -4, width: 8, height: 6, type: 'side' },      // サイド窓
     ];
     
-    // 翼の形状（流線形）
+    // 翼の形状（流線形）- サイズを2倍に拡大
     this.wings = [
-      { x: -6, y: -12, width: 12, height: 8, type: 'top' },     // 上翼
-      { x: -6, y: 4, width: 12, height: 8, type: 'bottom' },    // 下翼
+      { x: -12, y: -24, width: 24, height: 16, type: 'top' },   // 上翼
+      { x: -12, y: 8, width: 24, height: 16, type: 'bottom' },  // 下翼
     ];
     
-    // エンジン部分の形状（円形）
+    // エンジン部分の形状（円形）- サイズを2倍に拡大
     this.engines = [
-      { x: -18, y: -3, width: 6, height: 6, type: 'main' },     // メインエンジン
-      { x: -18, y: -3, width: 6, height: 6, type: 'main' },     // メインエンジン（重複して見えるように）
+      { x: -36, y: -6, width: 12, height: 12, type: 'main' },   // メインエンジン
+      { x: -36, y: -6, width: 12, height: 12, type: 'main' },   // メインエンジン（重複して見えるように）
     ];
     
     // 物理パラメータ
@@ -65,7 +65,7 @@ export class Rocket {
   }
 
   /**
-   * 機体の基本形状を描画
+   * 機体の基本形状を描画（グラデーション付き）
    */
   drawBody(ctx) {
     const poly = this.polygon();
@@ -73,11 +73,19 @@ export class Rocket {
     
     if (this.thrusting) {
       ctx.shadowColor = 'rgba(255, 150, 80, 0.55)';
-      ctx.shadowBlur = 10;
+      ctx.shadowBlur = 15;
     }
     
-    // 機体の基本色
-    ctx.fillStyle = this.thrusting ? '#ff6363' : '#ff3b3b';
+    // 機体のグラデーション
+    const gradient = ctx.createLinearGradient(
+      this.x - 20, this.y - 20, 
+      this.x + 20, this.y + 20
+    );
+    gradient.addColorStop(0, this.thrusting ? '#ff8a80' : '#ff6b6b');  // 明るい部分
+    gradient.addColorStop(0.5, this.thrusting ? '#ff5252' : '#e53935'); // 中央
+    gradient.addColorStop(1, this.thrusting ? '#d32f2f' : '#c62828');   // 暗い部分
+    
+    ctx.fillStyle = gradient;
     ctx.beginPath();
     ctx.moveTo(poly[0].x, poly[0].y);
     for (let i = 1; i < poly.length; i++) {
@@ -85,6 +93,27 @@ export class Rocket {
     }
     ctx.closePath();
     ctx.fill();
+    
+    // 機体のハイライト
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.beginPath();
+    ctx.moveTo(poly[0].x, poly[0].y);
+    ctx.lineTo(poly[1].x, poly[1].y);
+    ctx.lineTo(poly[2].x, poly[2].y);
+    ctx.lineTo(poly[3].x, poly[3].y);
+    ctx.closePath();
+    ctx.fill();
+    
+    // 機体のエッジ
+    ctx.strokeStyle = this.thrusting ? '#ff1744' : '#d32f2f';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(poly[0].x, poly[0].y);
+    for (let i = 1; i < poly.length; i++) {
+      ctx.lineTo(poly[i].x, poly[i].y);
+    }
+    ctx.closePath();
+    ctx.stroke();
     
     ctx.restore();
   }
@@ -124,7 +153,7 @@ export class Rocket {
   }
 
   /**
-   * 翼を描画（流線形）
+   * 翼を描画（流線形、グラデーション付き）
    */
   drawWings(ctx) {
     ctx.save();
@@ -135,21 +164,29 @@ export class Rocket {
       const radiusX = wing.width / 2;
       const radiusY = wing.height / 2;
       
-      // 翼の基本色（楕円形）
-      ctx.fillStyle = '#e74c3c';
+      // 翼のグラデーション
+      const gradient = ctx.createRadialGradient(
+        x + radiusX * 0.3, y + radiusY * 0.3, 0,
+        x + radiusX, y + radiusY, radiusX
+      );
+      gradient.addColorStop(0, '#ff6b6b');  // 中心（明るい）
+      gradient.addColorStop(0.7, '#e74c3c'); // 中間
+      gradient.addColorStop(1, '#c0392b');   // 外側（暗い）
+      
+      ctx.fillStyle = gradient;
       ctx.beginPath();
       ctx.ellipse(x + radiusX, y + radiusY, radiusX, radiusY, 0, 0, Math.PI * 2);
       ctx.fill();
       
       // 翼のハイライト（楕円形）
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
       ctx.beginPath();
-      ctx.ellipse(x + radiusX * 0.3, y + radiusY * 0.3, radiusX * 0.7, radiusY * 0.7, 0, 0, Math.PI * 2);
+      ctx.ellipse(x + radiusX * 0.2, y + radiusY * 0.2, radiusX * 0.6, radiusY * 0.6, 0, 0, Math.PI * 2);
       ctx.fill();
       
       // 翼のエッジ（楕円形）
-      ctx.strokeStyle = '#c0392b';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = '#a93226';
+      ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.ellipse(x + radiusX, y + radiusY, radiusX, radiusY, 0, 0, Math.PI * 2);
       ctx.stroke();
@@ -159,7 +196,7 @@ export class Rocket {
   }
 
   /**
-   * エンジン部分を描画（円形）
+   * エンジン部分を描画（円形、金属質感）
    */
   drawEngines(ctx) {
     ctx.save();
@@ -169,23 +206,38 @@ export class Rocket {
       const y = this.y + engine.y;
       const radius = engine.width / 2;
       
-      // エンジンの基本色（円形）
-      ctx.fillStyle = '#34495e';
+      // エンジンの金属質感グラデーション
+      const gradient = ctx.createRadialGradient(
+        x + radius * 0.3, y + radius * 0.3, 0,
+        x + radius, y + radius, radius
+      );
+      gradient.addColorStop(0, '#5d6d7e');  // 中心（明るい金属）
+      gradient.addColorStop(0.5, '#34495e'); // 中間
+      gradient.addColorStop(1, '#2c3e50');   // 外側（暗い金属）
+      
+      ctx.fillStyle = gradient;
       ctx.beginPath();
       ctx.arc(x + radius, y + radius, radius, 0, Math.PI * 2);
       ctx.fill();
       
       // エンジンのハイライト（円形）
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
       ctx.beginPath();
-      ctx.arc(x + radius * 0.3, y + radius * 0.3, radius * 0.6, 0, Math.PI * 2);
+      ctx.arc(x + radius * 0.2, y + radius * 0.2, radius * 0.5, 0, Math.PI * 2);
       ctx.fill();
       
       // エンジンのエッジ（円形）
-      ctx.strokeStyle = '#2c3e50';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = '#1b2631';
+      ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(x + radius, y + radius, radius, 0, Math.PI * 2);
+      ctx.stroke();
+      
+      // エンジンの内部構造
+      ctx.strokeStyle = '#566573';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(x + radius, y + radius, radius * 0.6, 0, Math.PI * 2);
       ctx.stroke();
     });
     
@@ -217,21 +269,21 @@ export class Rocket {
   }
 
   /**
-   * 炎エフェクトを描画
+   * 炎エフェクトを描画（サイズを2倍に拡大）
    */
   drawFlame(ctx) {
     ctx.save();
     ctx.shadowBlur = 0;
     
-    const gradient = ctx.createLinearGradient(this.x - 36, this.y, this.x - 10, this.y);
+    const gradient = ctx.createLinearGradient(this.x - 72, this.y, this.x - 20, this.y);
     gradient.addColorStop(0, 'rgba(255,180,70,0.05)');
     gradient.addColorStop(0.6, 'rgba(255,210,110,0.75)');
     gradient.addColorStop(1, 'rgba(255,230,150,0.95)');
     ctx.fillStyle = gradient;
     ctx.beginPath();
-    ctx.moveTo(this.x - 18, this.y - 7);
-    ctx.lineTo(this.x - 36, this.y);
-    ctx.lineTo(this.x - 18, this.y + 7);
+    ctx.moveTo(this.x - 36, this.y - 14);
+    ctx.lineTo(this.x - 72, this.y);
+    ctx.lineTo(this.x - 36, this.y + 14);
     ctx.closePath();
     ctx.fill();
     
