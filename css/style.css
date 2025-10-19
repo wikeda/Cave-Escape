@@ -128,6 +128,40 @@ html, body {
   transform: translateY(1px);
 }
 
+/* X投稿ボタンのスタイル */
+.twitter-button {
+  background: linear-gradient(135deg, #1da1f2, #0d8bd9) !important;
+  color: #ffffff !important;
+}
+
+.twitter-button:hover,
+.twitter-button:focus {
+  background: linear-gradient(135deg, #0d8bd9, #0a6bb3) !important;
+  box-shadow: 0 6px 16px rgba(29, 161, 242, 0.4) !important;
+}
+
+.twitter-button:active {
+  background: linear-gradient(135deg, #0a6bb3, #085a9c) !important;
+}
+
+.twitter-button.active {
+  background: linear-gradient(135deg, #0a6bb3, #085a9c) !important;
+}
+
+/* ボタングループのスタイル */
+.overlay-button-group {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.overlay-button-group .overlay-button {
+  flex: 1;
+  min-width: 140px;
+  max-width: 200px;
+}
+
 .hud-extra {
   position: absolute;
   left: 12px;
