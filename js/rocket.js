@@ -10,6 +10,7 @@ export class Rocket {
     this.y = y;  // Y座標
     this.vy = 0;  // Y方向の速度
     this.thrusting = false;  // 推力状態
+    this.thrustStartTime = 0;  // 推力開始時刻
     
     // 機体の基本形状（細長い円柱形）
     this.hull = [
@@ -41,6 +42,10 @@ export class Rocket {
   }
 
   setThrust(on) {
+    if (on && !this.thrusting) {
+      // 推力開始時：時刻を記録
+      this.thrustStartTime = Date.now() * 0.001;
+    }
     this.thrusting = on;
   }
 
@@ -159,41 +164,50 @@ export class Rocket {
   }
 
   /**
-   * 炎エフェクトを描画（1.5秒で色変化：赤→オレンジ→黄→青、その後青のまま）
+   * 炎エフェクトを描画（クリック中のみ色変化：赤→オレンジ→黄→青、離すと赤にリセット）
    */
   drawFlame(ctx) {
     ctx.save();
     ctx.shadowBlur = 0;
     
-    // 1.5秒で色変化、その後は青のまま
-    const time = Date.now() * 0.001; // 1秒 = 1000ms
-    const colorPhase = Math.min(time / 1.5, 1.0); // 0-1の範囲で1.5秒で完了、その後1.0で固定
-    
-    // 色の補間計算
-    // 0.0-0.5秒: 赤 → オレンジ
-    // 0.5-1.0秒: オレンジ → 黄
-    // 1.0-1.5秒: 黄 → 青
-    // 1.5秒以降: 青のまま
-    
     let r, g, b;
-    if (colorPhase < 0.33) {
-      // 赤 → オレンジ (0.0-0.5秒)
-      const t = colorPhase / 0.33;
-      r = Math.floor(255 * (1 - t) + 255 * t);
-      g = Math.floor(0 * (1 - t) + 140 * t);
-      b = Math.floor(0 * (1 - t) + 0 * t);
-    } else if (colorPhase < 0.67) {
-      // オレンジ → 黄 (0.5-1.0秒)
-      const t = (colorPhase - 0.33) / 0.34;
-      r = Math.floor(255 * (1 - t) + 255 * t);
-      g = Math.floor(140 * (1 - t) + 255 * t);
-      b = Math.floor(0 * (1 - t) + 0 * t);
+    
+    if (this.thrusting) {
+      // クリック中：推力開始からの経過時間で色変化
+      const currentTime = Date.now() * 0.001;
+      const thrustDuration = currentTime - this.thrustStartTime;
+      const colorPhase = Math.min(thrustDuration / 1.5, 1.0); // 0-1の範囲で1.5秒で完了、その後1.0で固定
+      
+      // 色の補間計算
+      // 0.0-0.5秒: 赤 → オレンジ
+      // 0.5-1.0秒: オレンジ → 黄
+      // 1.0-1.5秒: 黄 → 青
+      // 1.5秒以降: 青のまま
+      
+      if (colorPhase < 0.33) {
+        // 赤 → オレンジ (0.0-0.5秒)
+        const t = colorPhase / 0.33;
+        r = Math.floor(255 * (1 - t) + 255 * t);
+        g = Math.floor(0 * (1 - t) + 140 * t);
+        b = Math.floor(0 * (1 - t) + 0 * t);
+      } else if (colorPhase < 0.67) {
+        // オレンジ → 黄 (0.5-1.0秒)
+        const t = (colorPhase - 0.33) / 0.34;
+        r = Math.floor(255 * (1 - t) + 255 * t);
+        g = Math.floor(140 * (1 - t) + 255 * t);
+        b = Math.floor(0 * (1 - t) + 0 * t);
+      } else {
+        // 黄 → 青 (1.0-1.5秒、その後青のまま)
+        const t = (colorPhase - 0.67) / 0.33;
+        r = Math.floor(255 * (1 - t) + 0 * t);
+        g = Math.floor(255 * (1 - t) + 0 * t);
+        b = Math.floor(0 * (1 - t) + 255 * t);
+      }
     } else {
-      // 黄 → 青 (1.0-1.5秒、その後青のまま)
-      const t = (colorPhase - 0.67) / 0.33;
-      r = Math.floor(255 * (1 - t) + 0 * t);
-      g = Math.floor(255 * (1 - t) + 0 * t);
-      b = Math.floor(0 * (1 - t) + 255 * t);
+      // クリックしていない時：赤色（デフォルト）
+      r = 255;
+      g = 0;
+      b = 0;
     }
     
     const gradient = ctx.createLinearGradient(this.x - 36, this.y, this.x - 10, this.y);
