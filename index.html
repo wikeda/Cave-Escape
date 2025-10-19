@@ -5,10 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cave-Escape</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* minimal fallback if CSS fails */
+        .hidden { display: none; }
+        body { background: #111; color: #fff; font-family: Arial, sans-serif; }
+        #gameContainer { width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; }
+        .screen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; }
+        .gameButton { padding: 10px 20px; border-radius: 6px; border: 0; background: #4ecdc4; color: #111; font-weight: bold; cursor: pointer; }
+        .controls { opacity: 0.9; }
+    </style>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; media-src 'self';">
 </head>
 <body>
     <div id="gameContainer">
-        <!-- タイトル画面 -->
+        <!-- Title screen -->
         <div id="titleScreen" class="screen">
             <h1>Cave-Escape</h1>
             <p>洞窟を進むロケットのワンボタンアクションゲーム</p>
@@ -19,16 +29,17 @@
             <button id="startButton" class="gameButton">ゲーム開始</button>
         </div>
 
-        <!-- ゲーム画面 -->
+        <!-- Game screen -->
         <div id="gameScreen" class="screen hidden">
             <canvas id="gameCanvas" width="800" height="600"></canvas>
             <div id="gameUI">
                 <div id="score">距離: 0 km</div>
                 <div id="stage">ステージ: 1</div>
+                <div id="performanceInfo"></div>
             </div>
         </div>
 
-        <!-- ゲームオーバー画面 -->
+        <!-- Game Over screen -->
         <div id="gameOverScreen" class="screen hidden">
             <h2>ゲームオーバー</h2>
             <div id="finalScore">最終スコア: 0 km</div>
@@ -37,7 +48,7 @@
             <button id="titleButton" class="gameButton">タイトルに戻る</button>
         </div>
 
-        <!-- ステージクリア画面 -->
+        <!-- Stage Clear screen -->
         <div id="stageClearScreen" class="screen hidden">
             <h2>ステージクリア！</h2>
             <div id="clearScore">スコア: 0 km</div>
@@ -46,7 +57,7 @@
             <button id="titleButton2" class="gameButton">タイトルに戻る</button>
         </div>
 
-        <!-- 全ステージクリア画面 -->
+        <!-- All Clear screen -->
         <div id="allClearScreen" class="screen hidden">
             <h2>全ステージクリア！</h2>
             <div id="totalScore">総合スコア: 0 km</div>
@@ -56,7 +67,7 @@
         </div>
     </div>
 
-    <!-- 音声ファイル -->
+    <!-- Audio -->
     <audio id="explosionSound" preload="auto">
         <source src="assets/sounds/explosion.wav" type="audio/wav">
     </audio>
@@ -64,7 +75,7 @@
         <source src="assets/sounds/engine.wav" type="audio/wav">
     </audio>
 
-    <!-- JavaScript ファイル -->
+    <!-- Scripts -->
     <script src="js/audio.js"></script>
     <script src="js/particle.js"></script>
     <script src="js/rocket.js"></script>
@@ -75,3 +86,4 @@
     <script src="js/main.js"></script>
 </body>
 </html>
+
