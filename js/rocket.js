@@ -11,28 +11,27 @@ export class Rocket {
     this.vy = 0;  // Y方向の速度
     this.thrusting = false;  // 推力状態
     
-    // 機体の基本形状（流線形のロケット）- 元のサイズに戻す
+    // 機体の基本形状（細長い円柱形）
     this.hull = [
-      { x: 20, y: 0 },     // 先端
-      { x: 8, y: -8 },     // 上側（コックピット部分）
-      { x: 2, y: -10 },    // 上側（機体中央）
-      { x: -8, y: -8 },    // 上側（翼接続部）
-      { x: -15, y: -4 },   // 上側（エンジン部）
-      { x: -18, y: 0 },    // 後端中央
-      { x: -15, y: 4 },    // 下側（エンジン部）
-      { x: -8, y: 8 },     // 下側（翼接続部）
-      { x: 2, y: 10 },     // 下側（機体中央）
-      { x: 8, y: 8 },      // 下側（コックピット部分）
+      { x: 20, y: 0 },     // 先端（やや丸みを帯びた尖り）
+      { x: 6, y: -6 },     // 上側（コックピット部分）
+      { x: -2, y: -8 },    // 上側（機体中央）
+      { x: -10, y: -6 },   // 上側（エンジン接続部）
+      { x: -16, y: 0 },    // 後端中央
+      { x: -10, y: 6 },    // 下側（エンジン接続部）
+      { x: -2, y: 8 },     // 下側（機体中央）
+      { x: 6, y: 6 },      // 下側（コックピット部分）
     ];
     
-    // 窓の形状（楕円形のコックピット）- 1つだけ
+    // 窓の形状（小さな窓1つ）
     this.windows = [
-      { x: 6, y: -4, width: 8, height: 6, type: 'main' },      // メインコックピットのみ
+      { x: 8, y: -3, width: 6, height: 4, type: 'main' },      // 小さな窓
     ];
     
-    // エンジン部分の形状（台形）- 縦向き（短い辺がロケット側、長い辺が炎側）
+    // エンジン部分の形状（四角形2つ、上下配置）
     this.engines = [
-      { x: -20, y: -6, width: 12, height: 12, type: 'main' },  // メインエンジン（台形）
+      { x: -14, y: -8, width: 6, height: 4, type: 'top' },     // 上エンジン
+      { x: -14, y: 4, width: 6, height: 4, type: 'bottom' },   // 下エンジン
     ];
     
     // 物理パラメータ
@@ -57,7 +56,7 @@ export class Rocket {
   }
 
   /**
-   * 機体の基本形状を描画（グラデーション付き）
+   * 機体の基本形状を描画（シンプルな銀色）
    */
   drawBody(ctx) {
     const poly = this.polygon();
@@ -65,19 +64,11 @@ export class Rocket {
     
     if (this.thrusting) {
       ctx.shadowColor = 'rgba(255, 150, 80, 0.55)';
-      ctx.shadowBlur = 15;
+      ctx.shadowBlur = 10;
     }
     
-    // 機体のグラデーション（暗い銀色）
-    const gradient = ctx.createLinearGradient(
-      this.x - 10, this.y - 10, 
-      this.x + 10, this.y + 10
-    );
-    gradient.addColorStop(0, this.thrusting ? '#d1d5db' : '#9ca3af');  // 明るい銀色
-    gradient.addColorStop(0.5, this.thrusting ? '#6b7280' : '#4b5563'); // 中央の銀色
-    gradient.addColorStop(1, this.thrusting ? '#374151' : '#1f2937');   // 暗い銀色
-    
-    ctx.fillStyle = gradient;
+    // 機体の基本色（銀色）
+    ctx.fillStyle = this.thrusting ? '#b0b0b0' : '#a0a0a0';
     ctx.beginPath();
     ctx.moveTo(poly[0].x, poly[0].y);
     for (let i = 1; i < poly.length; i++) {
@@ -86,19 +77,9 @@ export class Rocket {
     ctx.closePath();
     ctx.fill();
     
-    // 機体のハイライト
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-    ctx.beginPath();
-    ctx.moveTo(poly[0].x, poly[0].y);
-    ctx.lineTo(poly[1].x, poly[1].y);
-    ctx.lineTo(poly[2].x, poly[2].y);
-    ctx.lineTo(poly[3].x, poly[3].y);
-    ctx.closePath();
-    ctx.fill();
-    
-    // 機体のエッジ（暗い銀色系）
-    ctx.strokeStyle = this.thrusting ? '#6b7280' : '#4b5563';
-    ctx.lineWidth = 2;
+    // 機体のエッジ
+    ctx.strokeStyle = this.thrusting ? '#808080' : '#707070';
+    ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(poly[0].x, poly[0].y);
     for (let i = 1; i < poly.length; i++) {
@@ -111,7 +92,7 @@ export class Rocket {
   }
 
   /**
-   * 窓を描画（楕円形のコックピット）
+   * 窓を描画（シンプルな四角形）
    */
   drawWindows(ctx) {
     ctx.save();
@@ -119,26 +100,14 @@ export class Rocket {
     this.windows.forEach(window => {
       const x = this.x + window.x;
       const y = this.y + window.y;
-      const radiusX = window.width / 2;
-      const radiusY = window.height / 2;
       
-      // 窓のフレーム（楕円形）
-      ctx.fillStyle = '#1a1a2e';
-      ctx.beginPath();
-      ctx.ellipse(x + radiusX, y + radiusY, radiusX + 1, radiusY + 1, 0, 0, Math.PI * 2);
-      ctx.fill();
+      // 窓のフレーム
+      ctx.fillStyle = '#404040';
+      ctx.fillRect(x - 1, y - 1, window.width + 2, window.height + 2);
       
-      // 窓ガラス（楕円形）- 暗い紺色
-      ctx.fillStyle = '#16213e';
-      ctx.beginPath();
-      ctx.ellipse(x + radiusX, y + radiusY, radiusX, radiusY, 0, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // 窓のハイライト（楕円形）
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-      ctx.beginPath();
-      ctx.ellipse(x + radiusX * 0.3, y + radiusY * 0.3, radiusX * 0.6, radiusY * 0.6, 0, 0, Math.PI * 2);
-      ctx.fill();
+      // 窓ガラス
+      ctx.fillStyle = '#202020';
+      ctx.fillRect(x, y, window.width, window.height);
     });
     
     ctx.restore();
@@ -146,7 +115,7 @@ export class Rocket {
 
 
   /**
-   * エンジン部分を描画（台形、金属質感）
+   * エンジン部分を描画（シンプルな四角形、暗いグレー）
    */
   drawEngines(ctx) {
     ctx.save();
@@ -154,47 +123,15 @@ export class Rocket {
     this.engines.forEach(engine => {
       const x = this.x + engine.x;
       const y = this.y + engine.y;
-      const width = engine.width;
-      const height = engine.height;
       
-      // エンジンの金属質感グラデーション（台形）
-      const gradient = ctx.createLinearGradient(
-        x, y, x + width, y + height
-      );
-      gradient.addColorStop(0, '#5d6d7e');  // 明るい金属
-      gradient.addColorStop(0.5, '#34495e'); // 中間
-      gradient.addColorStop(1, '#2c3e50');   // 暗い金属
+      // エンジンの基本色（暗いグレー）
+      ctx.fillStyle = '#606060';
+      ctx.fillRect(x, y, engine.width, engine.height);
       
-      // 台形の描画（90度回転：短い辺がロケット側、長い辺が炎側）
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.moveTo(x, y);                    // 左上
-      ctx.lineTo(x + width * 0.2, y + height * 0.2); // 右上（短い辺）
-      ctx.lineTo(x + width * 0.8, y + height * 0.8); // 右下（長い辺）
-      ctx.lineTo(x, y + height);           // 左下
-      ctx.closePath();
-      ctx.fill();
-      
-      // エンジンのハイライト（台形）
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-      ctx.beginPath();
-      ctx.moveTo(x + 2, y + 2);
-      ctx.lineTo(x + width * 0.3, y + height * 0.3);
-      ctx.lineTo(x + width * 0.6, y + height * 0.6);
-      ctx.lineTo(x + 2, y + height * 0.8);
-      ctx.closePath();
-      ctx.fill();
-      
-      // エンジンのエッジ（台形）
-      ctx.strokeStyle = '#1b2631';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + width * 0.2, y + height * 0.2);
-      ctx.lineTo(x + width * 0.8, y + height * 0.8);
-      ctx.lineTo(x, y + height);
-      ctx.closePath();
-      ctx.stroke();
+      // エンジンのエッジ
+      ctx.strokeStyle = '#404040';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, engine.width, engine.height);
     });
     
     ctx.restore();
@@ -203,14 +140,14 @@ export class Rocket {
   draw(ctx) {
     ctx.save();
     
-    // 描画順序を制御（後ろから前へ）
+    // 描画順序（シンプル）
     // 1. 機体の基本形状を描画
     this.drawBody(ctx);
     
-    // 2. 窓を描画（機体の上）
+    // 2. 窓を描画
     this.drawWindows(ctx);
     
-    // 3. エンジン部分を描画（機体の前面）
+    // 3. エンジン部分を描画
     this.drawEngines(ctx);
     
     // 4. 炎エフェクト（推力時）
