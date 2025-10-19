@@ -11,36 +11,36 @@ export class Rocket {
     this.vy = 0;  // Y方向の速度
     this.thrusting = false;  // 推力状態
     
-    // 機体の基本形状（流線形のロケット）- サイズを2倍に拡大
+    // 機体の基本形状（流線形のロケット）- 元のサイズに戻す
     this.hull = [
-      { x: 40, y: 0 },     // 先端
-      { x: 16, y: -16 },   // 上側（コックピット部分）
-      { x: 4, y: -20 },    // 上側（機体中央）
-      { x: -16, y: -16 },  // 上側（翼接続部）
-      { x: -30, y: -8 },   // 上側（エンジン部）
-      { x: -36, y: 0 },    // 後端中央
-      { x: -30, y: 8 },    // 下側（エンジン部）
-      { x: -16, y: 16 },   // 下側（翼接続部）
-      { x: 4, y: 20 },     // 下側（機体中央）
-      { x: 16, y: 16 },    // 下側（コックピット部分）
+      { x: 20, y: 0 },     // 先端
+      { x: 8, y: -8 },     // 上側（コックピット部分）
+      { x: 2, y: -10 },    // 上側（機体中央）
+      { x: -8, y: -8 },    // 上側（翼接続部）
+      { x: -15, y: -4 },   // 上側（エンジン部）
+      { x: -18, y: 0 },    // 後端中央
+      { x: -15, y: 4 },    // 下側（エンジン部）
+      { x: -8, y: 8 },     // 下側（翼接続部）
+      { x: 2, y: 10 },     // 下側（機体中央）
+      { x: 8, y: 8 },      // 下側（コックピット部分）
     ];
     
-    // 窓の形状（楕円形のコックピット）- サイズを2倍に拡大
+    // 窓の形状（楕円形のコックピット）- 元のサイズに戻す
     this.windows = [
-      { x: 12, y: -12, width: 16, height: 12, type: 'main' },   // メインコックピット
-      { x: 20, y: -4, width: 8, height: 6, type: 'side' },      // サイド窓
+      { x: 6, y: -6, width: 8, height: 6, type: 'main' },      // メインコックピット
+      { x: 10, y: -2, width: 4, height: 3, type: 'side' },     // サイド窓
     ];
     
-    // 翼の形状（流線形）- サイズを2倍に拡大
+    // 翼の形状（流線形）- より大きく
     this.wings = [
-      { x: -12, y: -24, width: 24, height: 16, type: 'top' },   // 上翼
-      { x: -12, y: 8, width: 24, height: 16, type: 'bottom' },  // 下翼
+      { x: -8, y: -18, width: 20, height: 12, type: 'top' },   // 上翼（大きく）
+      { x: -8, y: 6, width: 20, height: 12, type: 'bottom' },  // 下翼（大きく）
     ];
     
-    // エンジン部分の形状（円形）- サイズを2倍に拡大
+    // エンジン部分の形状（円形）- より大きく
     this.engines = [
-      { x: -36, y: -6, width: 12, height: 12, type: 'main' },   // メインエンジン
-      { x: -36, y: -6, width: 12, height: 12, type: 'main' },   // メインエンジン（重複して見えるように）
+      { x: -22, y: -8, width: 16, height: 16, type: 'main' },  // メインエンジン（大きく）
+      { x: -22, y: -8, width: 16, height: 16, type: 'main' },  // メインエンジン（重複して見えるように）
     ];
     
     // 物理パラメータ
@@ -76,14 +76,14 @@ export class Rocket {
       ctx.shadowBlur = 15;
     }
     
-    // 機体のグラデーション
+    // 機体のグラデーション（銀色）
     const gradient = ctx.createLinearGradient(
-      this.x - 20, this.y - 20, 
-      this.x + 20, this.y + 20
+      this.x - 10, this.y - 10, 
+      this.x + 10, this.y + 10
     );
-    gradient.addColorStop(0, this.thrusting ? '#ff8a80' : '#ff6b6b');  // 明るい部分
-    gradient.addColorStop(0.5, this.thrusting ? '#ff5252' : '#e53935'); // 中央
-    gradient.addColorStop(1, this.thrusting ? '#d32f2f' : '#c62828');   // 暗い部分
+    gradient.addColorStop(0, this.thrusting ? '#e8f4fd' : '#f5f5f5');  // 明るい銀色
+    gradient.addColorStop(0.5, this.thrusting ? '#bdbdbd' : '#9e9e9e'); // 中央の銀色
+    gradient.addColorStop(1, this.thrusting ? '#757575' : '#616161');   // 暗い銀色
     
     ctx.fillStyle = gradient;
     ctx.beginPath();
@@ -104,8 +104,8 @@ export class Rocket {
     ctx.closePath();
     ctx.fill();
     
-    // 機体のエッジ
-    ctx.strokeStyle = this.thrusting ? '#ff1744' : '#d32f2f';
+    // 機体のエッジ（銀色系）
+    ctx.strokeStyle = this.thrusting ? '#90a4ae' : '#78909c';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(poly[0].x, poly[0].y);
@@ -269,21 +269,21 @@ export class Rocket {
   }
 
   /**
-   * 炎エフェクトを描画（サイズを2倍に拡大）
+   * 炎エフェクトを描画（元のサイズに戻す）
    */
   drawFlame(ctx) {
     ctx.save();
     ctx.shadowBlur = 0;
     
-    const gradient = ctx.createLinearGradient(this.x - 72, this.y, this.x - 20, this.y);
+    const gradient = ctx.createLinearGradient(this.x - 36, this.y, this.x - 10, this.y);
     gradient.addColorStop(0, 'rgba(255,180,70,0.05)');
     gradient.addColorStop(0.6, 'rgba(255,210,110,0.75)');
     gradient.addColorStop(1, 'rgba(255,230,150,0.95)');
     ctx.fillStyle = gradient;
     ctx.beginPath();
-    ctx.moveTo(this.x - 36, this.y - 14);
-    ctx.lineTo(this.x - 72, this.y);
-    ctx.lineTo(this.x - 36, this.y + 14);
+    ctx.moveTo(this.x - 18, this.y - 7);
+    ctx.lineTo(this.x - 36, this.y);
+    ctx.lineTo(this.x - 18, this.y + 7);
     ctx.closePath();
     ctx.fill();
     
