@@ -154,10 +154,14 @@ html, body {
   gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .overlay-button-group .overlay-button {
-  flex: 1;
+  flex: 0 0 auto;
   min-width: 140px;
   max-width: 200px;
 }
