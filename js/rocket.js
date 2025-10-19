@@ -159,21 +159,50 @@ export class Rocket {
   }
 
   /**
-   * 炎エフェクトを描画（元のサイズに戻す）
+   * 炎エフェクトを描画（赤い色と時間変化付き）
    */
   drawFlame(ctx) {
     ctx.save();
     ctx.shadowBlur = 0;
     
+    // 時間ベースの色変化（0-1の範囲で循環）
+    const time = Date.now() * 0.003; // 時間の進行速度
+    const colorPhase = Math.sin(time) * 0.3 + 0.7; // 0.4-1.0の範囲で変化
+    
+    // より赤い色合いのグラデーション
     const gradient = ctx.createLinearGradient(this.x - 36, this.y, this.x - 10, this.y);
-    gradient.addColorStop(0, 'rgba(255,180,70,0.05)');
-    gradient.addColorStop(0.6, 'rgba(255,210,110,0.75)');
-    gradient.addColorStop(1, 'rgba(255,230,150,0.95)');
+    
+    // 時間変化する色（赤を強く、オレンジを抑える）
+    const redIntensity = Math.floor(255 * colorPhase);
+    const orangeIntensity = Math.floor(180 * colorPhase);
+    const yellowIntensity = Math.floor(100 * colorPhase);
+    
+    gradient.addColorStop(0, `rgba(${redIntensity},${Math.floor(orangeIntensity * 0.3)},${Math.floor(yellowIntensity * 0.2)},0.1)`);
+    gradient.addColorStop(0.4, `rgba(${redIntensity},${Math.floor(orangeIntensity * 0.6)},${Math.floor(yellowIntensity * 0.4)},0.6)`);
+    gradient.addColorStop(0.8, `rgba(${redIntensity},${orangeIntensity},${yellowIntensity},0.8)`);
+    gradient.addColorStop(1, `rgba(${redIntensity},${Math.floor(orangeIntensity * 1.2)},${Math.floor(yellowIntensity * 1.5)},0.95)`);
+    
     ctx.fillStyle = gradient;
     ctx.beginPath();
     ctx.moveTo(this.x - 18, this.y - 7);
     ctx.lineTo(this.x - 36, this.y);
     ctx.lineTo(this.x - 18, this.y + 7);
+    ctx.closePath();
+    ctx.fill();
+    
+    // 追加の炎レイヤー（より明るい中心部分）
+    const innerGradient = ctx.createLinearGradient(this.x - 30, this.y, this.x - 15, this.y);
+    const brightRed = Math.floor(255 * Math.min(colorPhase * 1.2, 1));
+    const brightOrange = Math.floor(200 * colorPhase);
+    
+    innerGradient.addColorStop(0, `rgba(${brightRed},${brightOrange},${Math.floor(brightOrange * 0.5)},0.3)`);
+    innerGradient.addColorStop(1, `rgba(${brightRed},${Math.floor(brightOrange * 1.5)},${brightOrange},0.6)`);
+    
+    ctx.fillStyle = innerGradient;
+    ctx.beginPath();
+    ctx.moveTo(this.x - 18, this.y - 4);
+    ctx.lineTo(this.x - 28, this.y);
+    ctx.lineTo(this.x - 18, this.y + 4);
     ctx.closePath();
     ctx.fill();
     
