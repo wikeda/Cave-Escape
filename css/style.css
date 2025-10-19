@@ -1,10 +1,190 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
-body { background: #111; color: #fff; font-family: system-ui, Arial, sans-serif; }
-#gameContainer { width: 100vw; height: 100vh; display: grid; place-items: center; position: relative; }
-.screen { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; gap: 12px; padding: 16px; }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #0c0f13;
+  color: #e6edf3;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 12px;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans JP", Helvetica, Arial, sans-serif;
+}
+
+#game-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(800px, 100vw - 24px, calc((100vh - 24px) * (16 / 9)));
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+#game {
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  background: linear-gradient(#05070a, #0c0f13);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  border-radius: 6px;
+  touch-action: none;
+}
+
+#overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 32px 24px 36px;
+  gap: 16px;
+  pointer-events: none;
+  z-index: 5;
+}
+
 .hidden { display: none; }
-.controls { opacity: .9; font-size: 14px; line-height: 1.6; }
-.gameButton { background: #4ecdc4; color: #111; border: 0; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-#gameCanvas { background: #000; border: 2px solid #333; display: block; }
-#gameUI { position: absolute; top: 16px; left: 16px; font-weight: 700; display: grid; gap: 6px; }
+
+#overlay.interactive {
+  pointer-events: auto;
+}
+
+#overlay .overlay-panel {
+  max-width: 520px;
+  width: 100%;
+  padding: 24px;
+  border-radius: 18px;
+  background: rgba(5, 16, 26, 0.82);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: #f2f6fb;
+  text-align: center;
+  backdrop-filter: blur(6px);
+}
+
+#overlay .overlay-panel h1 {
+  margin: 0;
+  font-size: 32px;
+  letter-spacing: 0.05em;
+}
+
+#overlay .overlay-panel p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+#overlay .overlay-panel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+#overlay .overlay-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 200px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.7);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+#overlay .overlay-button:hover,
+#overlay .overlay-button:focus {
+  outline: none;
+  transform: translateY(-1px);
+  background: rgba(0,0,0,0.85);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+}
+
+#overlay .overlay-button:active {
+  transform: translateY(1px);
+  background: rgba(0,0,0,0.9);
+}
+
+#overlay .overlay-button.active {
+  background: rgba(0,0,0,0.9);
+  transform: translateY(1px);
+}
+
+.hud-extra {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: -56px;
+  color: #e6edf3;
+  font-size: 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.hud-extra div {
+  line-height: 1.3;
+}
+
+.floating-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  min-width: 52px;
+  min-height: 52px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(0, 0, 0, 0.7);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.15s ease, background 0.15s ease;
+  pointer-events: auto;
+}
+
+.floating-button:focus,
+.floating-button:hover {
+  outline: none;
+  transform: translateY(-1px);
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.floating-button:active {
+  transform: translateY(1px);
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.floating-button.hidden {
+  display: none;
+}
+.overlay-panel .overlay-button-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12px;
+}

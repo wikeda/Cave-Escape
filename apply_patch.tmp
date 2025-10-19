@@ -1,0 +1,26 @@
+*** Begin Patch
+*** Update File: Cave-Escape/js/cave.js
+@@
+-    // 縺薙％縺ｧ莉穂ｸ翫￡・壼｢・阜邱壹・謠上°縺壹∝､門・縺ｮ蝪励ｊ縺ｧ螳御ｺ・    this._drawInnerShadow(ctx);
++    this._strokeEdge(ctx, this.top, baseTop);
++    this._strokeEdge(ctx, this.bot, baseBot);
++    this._drawInnerShadow(ctx);
+@@
+   _drawRim(ctx, poly, inwardSign, thickness, baseColor) {
+@@
+   }
++
++  _strokeEdge(ctx, line, color) {
++    ctx.save();
++    ctx.lineWidth = 2;
++    ctx.lineJoin = 'round';
++    ctx.strokeStyle = color;
++    ctx.beginPath();
++    ctx.moveTo(line[0].x, line[0].y);
++    for (let i = 1; i < line.length; i += 1) {
++      ctx.lineTo(line[i].x, line[i].y);
++    }
++    ctx.stroke();
++    ctx.restore();
++  }
+*** End Patch

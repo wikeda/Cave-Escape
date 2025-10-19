@@ -1,37 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cave-Escape</title>
-  <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
-  <div id="gameContainer">
-    <!-- タイトル画面 -->
-    <div id="titleScreen" class="screen">
-      <h1>Cave-Escape</h1>
-      <p>洞窟を進むロケットのワンボタンアクションゲーム</p>
-      <div class="controls">
-        <p>操作: スペースキーで上昇します</p>
-        <p>目標: 壁に当たらないように進みましょう</p>
-      </div>
-      <button id="startButton" class="gameButton">ゲーム開始</button>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cave-Escape</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div id="game-container">
+      <canvas id="game" width="800" height="450"></canvas>
+      <div id="overlay" class="hidden"></div>
+      <div id="hud-extra" class="hud-extra"></div>
+      <button id="pause-btn" class="floating-button hidden" type="button">Pause</button>
     </div>
-
-    <!-- ゲーム画面 -->
-    <div id="gameScreen" class="screen hidden">
-      <canvas id="gameCanvas" width="800" height="600"></canvas>
-      <div id="gameUI">
-        <div id="score">距離: 0 km</div>
-        <div id="stage">ステージ: 1</div>
-      </div>
-    </div>
-  </div>
-
-  <script src="js/game.js"></script>
-  <script src="js/main.js"></script>
-</body>
-<!-- Copyright headers intentionally omitted -->
+    <script type="module" src="js/main.js"></script>
+  </body>
 </html>
-
