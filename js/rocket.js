@@ -159,40 +159,41 @@ export class Rocket {
   }
 
   /**
-   * 炎エフェクトを描画（1秒周期で色変化：赤→オレンジ・黄→青）
+   * 炎エフェクトを描画（1.5秒で色変化：赤→オレンジ→黄→青、その後青のまま）
    */
   drawFlame(ctx) {
     ctx.save();
     ctx.shadowBlur = 0;
     
-    // 1秒周期の色変化（0-1の範囲で循環）
+    // 1.5秒で色変化、その後は青のまま
     const time = Date.now() * 0.001; // 1秒 = 1000ms
-    const colorPhase = (Math.sin(time * Math.PI * 2) + 1) / 2; // 0-1の範囲で滑らかに変化
+    const colorPhase = Math.min(time / 1.5, 1.0); // 0-1の範囲で1.5秒で完了、その後1.0で固定
     
     // 色の補間計算
-    // 0.0-0.33: 赤 → オレンジ・黄
-    // 0.33-0.66: オレンジ・黄 → 青
-    // 0.66-1.0: 青 → 赤
+    // 0.0-0.5秒: 赤 → オレンジ
+    // 0.5-1.0秒: オレンジ → 黄
+    // 1.0-1.5秒: 黄 → 青
+    // 1.5秒以降: 青のまま
     
     let r, g, b;
     if (colorPhase < 0.33) {
-      // 赤 → オレンジ・黄
+      // 赤 → オレンジ (0.0-0.5秒)
       const t = colorPhase / 0.33;
       r = Math.floor(255 * (1 - t) + 255 * t);
-      g = Math.floor(0 * (1 - t) + 180 * t);
-      b = Math.floor(0 * (1 - t) + 70 * t);
-    } else if (colorPhase < 0.66) {
-      // オレンジ・黄 → 青
-      const t = (colorPhase - 0.33) / 0.33;
-      r = Math.floor(255 * (1 - t) + 0 * t);
-      g = Math.floor(180 * (1 - t) + 0 * t);
-      b = Math.floor(70 * (1 - t) + 255 * t);
+      g = Math.floor(0 * (1 - t) + 140 * t);
+      b = Math.floor(0 * (1 - t) + 0 * t);
+    } else if (colorPhase < 0.67) {
+      // オレンジ → 黄 (0.5-1.0秒)
+      const t = (colorPhase - 0.33) / 0.34;
+      r = Math.floor(255 * (1 - t) + 255 * t);
+      g = Math.floor(140 * (1 - t) + 255 * t);
+      b = Math.floor(0 * (1 - t) + 0 * t);
     } else {
-      // 青 → 赤
-      const t = (colorPhase - 0.66) / 0.34;
-      r = Math.floor(0 * (1 - t) + 255 * t);
-      g = Math.floor(0 * (1 - t) + 0 * t);
-      b = Math.floor(255 * (1 - t) + 0 * t);
+      // 黄 → 青 (1.0-1.5秒、その後青のまま)
+      const t = (colorPhase - 0.67) / 0.33;
+      r = Math.floor(255 * (1 - t) + 0 * t);
+      g = Math.floor(255 * (1 - t) + 0 * t);
+      b = Math.floor(0 * (1 - t) + 255 * t);
     }
     
     const gradient = ctx.createLinearGradient(this.x - 36, this.y, this.x - 10, this.y);
