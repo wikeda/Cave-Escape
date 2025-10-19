@@ -159,95 +159,21 @@ export class Rocket {
   }
 
   /**
-   * 炎エフェクトを描画（揺らめき効果とリアルな炎）
+   * 炎エフェクトを描画（シンプルな形に戻す）
    */
   drawFlame(ctx) {
     ctx.save();
     ctx.shadowBlur = 0;
     
-    // 時間ベースの変化
-    const time = Date.now() * 0.003;
-    const colorPhase = Math.sin(time) * 0.3 + 0.7;
-    
-    // 揺らめき効果のための複数の波
-    const wave1 = Math.sin(time * 1.2) * 2;
-    const wave2 = Math.sin(time * 0.8 + 1.5) * 1.5;
-    const wave3 = Math.sin(time * 1.5 + 3.0) * 1;
-    
-    // より赤い色合いのグラデーション
     const gradient = ctx.createLinearGradient(this.x - 36, this.y, this.x - 10, this.y);
-    
-    const redIntensity = Math.floor(255 * colorPhase);
-    const orangeIntensity = Math.floor(180 * colorPhase);
-    const yellowIntensity = Math.floor(100 * colorPhase);
-    
-    gradient.addColorStop(0, `rgba(${redIntensity},${Math.floor(orangeIntensity * 0.3)},${Math.floor(yellowIntensity * 0.2)},0.1)`);
-    gradient.addColorStop(0.4, `rgba(${redIntensity},${Math.floor(orangeIntensity * 0.6)},${Math.floor(yellowIntensity * 0.4)},0.6)`);
-    gradient.addColorStop(0.8, `rgba(${redIntensity},${orangeIntensity},${yellowIntensity},0.8)`);
-    gradient.addColorStop(1, `rgba(${redIntensity},${Math.floor(orangeIntensity * 1.2)},${Math.floor(yellowIntensity * 1.5)},0.95)`);
-    
-    // 外側の炎（揺らめく形状）
+    gradient.addColorStop(0, 'rgba(255,180,70,0.05)');
+    gradient.addColorStop(0.6, 'rgba(255,210,110,0.75)');
+    gradient.addColorStop(1, 'rgba(255,230,150,0.95)');
     ctx.fillStyle = gradient;
     ctx.beginPath();
     ctx.moveTo(this.x - 18, this.y - 7);
-    
-    // 揺らめく炎の形状（複数の波を重ね合わせ）
-    const flamePoints = 8;
-    for (let i = 0; i <= flamePoints; i++) {
-      const t = i / flamePoints;
-      const x = this.x - 18 - (18 * t) + wave1 * t + wave2 * Math.sin(t * Math.PI);
-      const y = this.y - 7 + (14 * t) + wave3 * Math.cos(t * Math.PI * 0.5);
-      ctx.lineTo(x, y);
-    }
-    
-    ctx.closePath();
-    ctx.fill();
-    
-    // 内側の炎（より明るく、細かく揺らめく）
-    const innerGradient = ctx.createLinearGradient(this.x - 30, this.y, this.x - 15, this.y);
-    const brightRed = Math.floor(255 * Math.min(colorPhase * 1.2, 1));
-    const brightOrange = Math.floor(200 * colorPhase);
-    
-    innerGradient.addColorStop(0, `rgba(${brightRed},${brightOrange},${Math.floor(brightOrange * 0.5)},0.3)`);
-    innerGradient.addColorStop(1, `rgba(${brightRed},${Math.floor(brightOrange * 1.5)},${brightOrange},0.6)`);
-    
-    ctx.fillStyle = innerGradient;
-    ctx.beginPath();
-    ctx.moveTo(this.x - 18, this.y - 4);
-    
-    // 内側の炎も揺らめかせる
-    const innerFlamePoints = 6;
-    for (let i = 0; i <= innerFlamePoints; i++) {
-      const t = i / innerFlamePoints;
-      const x = this.x - 18 - (10 * t) + wave1 * t * 0.5 + wave2 * Math.sin(t * Math.PI * 1.5);
-      const y = this.y - 4 + (8 * t) + wave3 * Math.cos(t * Math.PI * 0.8);
-      ctx.lineTo(x, y);
-    }
-    
-    ctx.closePath();
-    ctx.fill();
-    
-    // 最内側の明るい炎（白っぽい中心）
-    const coreGradient = ctx.createLinearGradient(this.x - 25, this.y, this.x - 18, this.y);
-    const whiteIntensity = Math.floor(255 * Math.min(colorPhase * 0.8, 1));
-    const coreRed = Math.floor(255 * colorPhase);
-    
-    coreGradient.addColorStop(0, `rgba(${whiteIntensity},${coreRed},${Math.floor(coreRed * 0.3)},0.4)`);
-    coreGradient.addColorStop(1, `rgba(${coreRed},${Math.floor(coreRed * 0.8)},${Math.floor(coreRed * 0.4)},0.7)`);
-    
-    ctx.fillStyle = coreGradient;
-    ctx.beginPath();
-    ctx.moveTo(this.x - 18, this.y - 2);
-    
-    // 中心の炎も微細に揺らめかせる
-    const coreFlamePoints = 4;
-    for (let i = 0; i <= coreFlamePoints; i++) {
-      const t = i / coreFlamePoints;
-      const x = this.x - 18 - (7 * t) + wave1 * t * 0.3 + wave2 * Math.sin(t * Math.PI * 2);
-      const y = this.y - 2 + (4 * t) + wave3 * Math.cos(t * Math.PI * 1.2);
-      ctx.lineTo(x, y);
-    }
-    
+    ctx.lineTo(this.x - 36, this.y);
+    ctx.lineTo(this.x - 18, this.y + 7);
     ctx.closePath();
     ctx.fill();
     
