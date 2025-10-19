@@ -67,6 +67,29 @@ overlay.addEventListener('pointerdown', (e) => {
   });
 });
 
+// X投稿機能
+function shareToTwitter() {
+  const distance = game.formattedCurrentDistance();
+  const stage = game.stageIndex + 1;
+  const isGameClear = game.state === 'gameclear';
+  
+  let text;
+  if (isGameClear) {
+    text = `🚀 Cave Escape 全ステージクリア！\nクリア距離: ${distance} km\n\n#CaveEscape #ゲーム`;
+  } else {
+    text = `🚀 Cave Escape で ${distance} km 到達！\nステージ ${stage} でゲームオーバー\n\n#CaveEscape #ゲーム`;
+  }
+  
+  const url = 'https://github.com/wikeda/Cave-Escape';
+  const hashtags = 'CaveEscape,ゲーム,アクションゲーム';
+  
+  // XのWeb Intent URLを作成
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}&hashtags=${encodeURIComponent(hashtags)}`;
+  
+  // 新しいタブでX投稿画面を開く
+  window.open(twitterUrl, '_blank', 'width=600,height=400');
+}
+
 function handleAction(action) {
   switch (action) {
     case 'start':
@@ -80,6 +103,9 @@ function handleAction(action) {
       break;
     case 'continue':
       game.nextStageOrClear();
+      break;
+    case 'tweet':
+      shareToTwitter();
       break;
     default:
       break;
@@ -175,11 +201,16 @@ function frame(now) {
   } else if (game.state === 'gameover') {
     game.draw();
     const distance = game.formattedCurrentDistance();
+    const stage = game.stageIndex + 1;
     setOverlay([
       `<div class="overlay-panel">
         <h1>ゲームオーバー</h1>
         <p>到達距離: ${distance} km</p>
-        <button class="overlay-button" data-action="restart">タイトルへ戻る</button>
+        <p>ステージ: ${stage}</p>
+        <div class="overlay-button-group">
+          <button class="overlay-button" data-action="restart">タイトルへ戻る</button>
+          <button class="overlay-button twitter-button" data-action="tweet">Xに投稿</button>
+        </div>
       </div>`
     ], { interactive: true });
     setHudExtra([
@@ -189,12 +220,16 @@ function frame(now) {
     pauseBtn?.classList.add('hidden');
   } else if (game.state === 'gameclear') {
     game.draw();
+    const distance = game.formattedCurrentDistance();
     setOverlay([
       `<div class="overlay-panel">
         <h1>全ステージクリア！</h1>
         <p>おめでとうございます！</p>
-        <p>クリア距離: ${game.formattedCurrentDistance()} km</p>
-        <button class="overlay-button" data-action="restart">タイトルへ戻る</button>
+        <p>クリア距離: ${distance} km</p>
+        <div class="overlay-button-group">
+          <button class="overlay-button" data-action="restart">タイトルへ戻る</button>
+          <button class="overlay-button twitter-button" data-action="tweet">Xに投稿</button>
+        </div>
       </div>`
     ], { interactive: true });
     setHudExtra([
