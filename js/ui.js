@@ -50,23 +50,23 @@ export class UI {
     const ctx = this.ctx;
     ctx.save();
     
-    // 画面の上枠にくっつける
-    const hudHeight = 60;
-    const y = 0; // 画面の最上部
-    const x = 0;
-    const width = this.canvas.width;
+    // 小さなサイズでコンパクトに
+    const hudWidth = 300;
+    const hudHeight = 40;
+    const y = 8; // 画面上部から少し下
+    const x = (this.canvas.width - hudWidth) / 2; // 中央配置
     
     // 宇宙船コックピット風の背景
-    this._drawCockpitBackground(ctx, x, y, width, hudHeight);
+    this._drawCockpitBackground(ctx, x, y, hudWidth, hudHeight);
     
     // スキャンライン効果
-    this._drawScanLines(ctx, x, y, width, hudHeight);
+    this._drawScanLines(ctx, x, y, hudWidth, hudHeight);
     
     // 青いグロー効果
-    this._drawGlowEffect(ctx, x, y, width, hudHeight);
+    this._drawGlowEffect(ctx, x, y, hudWidth, hudHeight);
     
     // テキストの描画（宇宙船の計器盤風）
-    this._drawCockpitText(ctx, stageIndex, distancePx, width, hudHeight);
+    this._drawCockpitText(ctx, stageIndex, distancePx, hudWidth, hudHeight);
     
     ctx.restore();
   }
@@ -114,7 +114,7 @@ export class UI {
     ctx.lineWidth = 0.5;
     
     // 縦線
-    for (let i = 0; i < width; i += 20) {
+    for (let i = 0; i < width; i += 40) {
       ctx.beginPath();
       ctx.moveTo(x + i, y);
       ctx.lineTo(x + i, y + height);
@@ -122,7 +122,7 @@ export class UI {
     }
     
     // 横線
-    for (let i = 0; i < height; i += 15) {
+    for (let i = 0; i < height; i += 20) {
       ctx.beginPath();
       ctx.moveTo(x, y + i);
       ctx.lineTo(x + width, y + i);
@@ -185,29 +185,29 @@ export class UI {
     const centerX = width / 2;
     const centerY = height / 2;
     
-    // フォント設定（モノスペース風）
-    ctx.font = 'bold 16px "Courier New", monospace';
+    // フォント設定（小さめのモノスペース風）
+    ctx.font = 'bold 12px "Courier New", monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     
     // ステージ表示
     ctx.fillStyle = 'rgba(0, 255, 255, 0.9)';
     ctx.shadowColor = 'rgba(0, 255, 255, 0.5)';
-    ctx.shadowBlur = 3;
-    ctx.fillText(`STAGE ${stageIndex + 1}`, centerX - 80, centerY);
+    ctx.shadowBlur = 2;
+    ctx.fillText(`STAGE ${stageIndex + 1}`, centerX - 55, centerY);
     
     // 距離表示
     ctx.fillStyle = 'rgba(0, 200, 255, 0.9)';
     ctx.shadowColor = 'rgba(0, 200, 255, 0.5)';
-    ctx.shadowBlur = 3;
-    ctx.fillText(`DIST ${formatKm(distancePx)} KM`, centerX + 80, centerY);
+    ctx.shadowBlur = 2;
+    ctx.fillText(`DIST ${formatKm(distancePx)} KM`, centerX + 55, centerY);
     
     // 中央の区切り線
     ctx.strokeStyle = 'rgba(0, 150, 255, 0.4)';
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 0.5;
     ctx.beginPath();
-    ctx.moveTo(centerX, centerY - 15);
-    ctx.lineTo(centerX, centerY + 15);
+    ctx.moveTo(centerX, centerY - 12);
+    ctx.lineTo(centerX, centerY + 12);
     ctx.stroke();
     
     // ステータスインジケーター
@@ -225,13 +225,13 @@ export class UI {
     ctx.fillStyle = 'rgba(0, 255, 0, 0.8)';
     ctx.shadowBlur = 0;
     ctx.beginPath();
-    ctx.arc(centerX - 120, centerY, 3, 0, Math.PI * 2);
+    ctx.arc(centerX - 75, centerY, 2, 0, Math.PI * 2);
     ctx.fill();
     
     // 右側のインジケーター
     ctx.fillStyle = 'rgba(255, 255, 0, 0.8)';
     ctx.beginPath();
-    ctx.arc(centerX + 120, centerY, 3, 0, Math.PI * 2);
+    ctx.arc(centerX + 75, centerY, 2, 0, Math.PI * 2);
     ctx.fill();
   }
 
