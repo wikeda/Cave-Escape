@@ -4,6 +4,7 @@ import { Cave } from './cave.js';
 import { clamp, formatKm } from './util.js';
 import { ParticleSystem } from './particle.js';
 import { soundManager } from './sound.js';
+import { UI } from './ui.js';
 
 // ゲームの基本設定
 const BASE_SETTLE_TIME = 3.0;  // 基本安定時間
@@ -19,6 +20,9 @@ export class Game {
   constructor(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
+    
+    // UI管理
+    this.ui = new UI(canvas);
     
     // ゲーム状態
     this.state = 'title';
