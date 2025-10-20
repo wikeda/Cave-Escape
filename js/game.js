@@ -297,6 +297,11 @@ export class Game {
     this.cave.draw(ctx);
     if (this.rocketVisible) this.rocket.draw(ctx);
     this.particles.draw(ctx);
+    
+    // HUDを描画
+    if (this.state === 'playing') {
+      this.ui.hud(this.distancePx, this.stageIndex);
+    }
 
     if (this.hitFlash > 0) {
       const alpha = Math.min(0.7, this.hitFlash);
