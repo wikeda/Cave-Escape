@@ -48,6 +48,7 @@ export class Game {
     this.rocketVisible = true;  // ロケット表示フラグ
     this.nightSkyMode = false;  // 夜空モードフラグ
     this.invincibleMode = false;  // 無敵モードフラグ
+    this.speedSlowdownMode = false;  // スピード減速モードフラグ
 
     // ゲームオブジェクト
     this.rocket = null;
@@ -130,6 +131,14 @@ export class Game {
     this.invincibleMode = enabled;
   }
 
+  /**
+   * スピード減速モードを設定
+   * @param {boolean} enabled - スピード減速モードの有効/無効
+   */
+  setSpeedSlowdownMode(enabled) {
+    this.speedSlowdownMode = enabled;
+  }
+
 
   start() {
     this.stageIndex = 0;
@@ -181,7 +190,24 @@ export class Game {
     this.timeSinceStart += dt;
     this.sinceStageStart += dt;
 
-    const speed = STAGES[this.stageIndex].speed;
+    let speed = STAGES[this.stageIndex].speed;
+    
+    // ステージ5の最後20kmでスピード減速
+    if (this.stageIndex === 4 && this.speedSlowdownMode) {
+      const stage5Total = STAGES[4].distancePx;  // 150km
+      const slowdownStart = stage5Total - 20000;  // 130km以降
+      const remainingDistance = stage5Total - this.distancePx;
+      
+      if (remainingDistance <= 20000) {  // 最後の20km
+        const slowdownProgress = (20000 - remainingDistance) / 20000;  // 0-1の進行度
+        const originalSpeed = STAGES[4].speed;  // 800
+        const finalSpeed = 100;
+        
+        // 徐々にスピードを落とす（線形補間）
+        speed = originalSpeed - (originalSpeed - finalSpeed) * slowdownProgress;
+      }
+    }
+    
     const dx = speed * dt;
     this.distancePx += dx;
     this.cave.update(dx);
@@ -248,15 +274,19 @@ export class Game {
       ctx.restore();
     }
 
-    // ステージ5の最後20kmで夜空モードに切り替え
-    if (this.stageIndex === 4 && this.distancePx >= 13000) {  // ステージ5（インデックス4）で130km以降
+    // ステージ5の最後20kmで夜空モードとスピード減速モードに切り替え
+    if (this.stageIndex === 4 && this.distancePx >= 5000) {  // ステージ5（インデックス4）で50km以降（デバッグ用）
       if (!this.nightSkyMode) {
         this.nightSkyMode = true;
         this.cave.setNightSkyMode(true);
       }
+      if (!this.speedSlowdownMode) {
+        this.speedSlowdownMode = true;
+      }
     } else if (this.nightSkyMode) {
       this.nightSkyMode = false;
       this.cave.setNightSkyMode(false);
+      this.speedSlowdownMode = false;
     }
 
     this.cave.draw(ctx);
