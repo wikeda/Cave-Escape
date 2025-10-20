@@ -42,7 +42,7 @@ export class UI {
   }
 
   /**
-   * ゲーム内HUDを表示
+   * ゲーム内HUDを表示（中央配置、1行表示）
    * @param {number} distancePx - 現在の距離（ピクセル）
    * @param {number} stageIndex - ステージインデックス
    */
@@ -50,28 +50,41 @@ export class UI {
     const ctx = this.ctx;
     ctx.save();
     
-    // 角丸の背景ボックス（より濃い半透明の黒）
-    const x = 12;
-    const y = 12;
-    const width = 220;
-    const height = 60;
+    // 1行のテキストを作成
+    const text = `Stage: ${stageIndex + 1} Dist: ${formatKm(distancePx)} km`;
+    
+    // テキストサイズを設定
+    ctx.font = 'bold 18px system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans JP", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    
+    // テキストサイズを測定
+    const metrics = ctx.measureText(text);
+    const textWidth = metrics.width;
+    const textHeight = 20;
+    const paddingX = 20;
+    const paddingY = 12;
+    const boxWidth = textWidth + paddingX * 2;
+    const boxHeight = textHeight + paddingY * 2;
+    
+    // 中央位置を計算
+    const x = (this.canvas.width - boxWidth) / 2;
+    const y = 20; // 上部から20px
     const radius = 8;
     
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';  // より濃い半透明の黒
-    this._drawRoundedRect(ctx, x, y, width, height, radius);
+    // 角丸の背景ボックス
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+    this._drawRoundedRect(ctx, x, y, boxWidth, boxHeight, radius);
     ctx.fill();
     
     // ボーダー効果
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
     ctx.lineWidth = 1;
-    this._drawRoundedRect(ctx, x, y, width, height, radius);
+    this._drawRoundedRect(ctx, x, y, boxWidth, boxHeight, radius);
     ctx.stroke();
     
-    // テキストの描画（より明るい色）
+    // テキストの描画
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 16px system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans JP", sans-serif';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'top';
     
     // テキストに影を追加
     ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
@@ -79,8 +92,7 @@ export class UI {
     ctx.shadowOffsetX = 1;
     ctx.shadowOffsetY = 1;
     
-    ctx.fillText(`Stage: ${stageIndex + 1}`, 24, 24);
-    ctx.fillText(`Dist: ${formatKm(distancePx)} km`, 24, 48);
+    ctx.fillText(text, this.canvas.width / 2, y + paddingY);
     
     ctx.restore();
   }
