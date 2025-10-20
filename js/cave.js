@@ -63,15 +63,17 @@ export class Cave {
   }
 
   /**
-   * 星を生成
+   * 星を初期化（夜空モード用）
    */
   _generateStars() {
     this.stars = [];
-    const numStars = 80;  // 星の数
+    const numStars = 150;  // 星の数を増加
     for (let i = 0; i < numStars; i++) {
+      // スクロールオフセットを考慮してワールド座標で配置
+      const worldX = this.scrollOffset + Math.random() * LOGICAL_WIDTH;
       this.stars.push({
-        x: Math.random() * LOGICAL_WIDTH,  // 画面幅内に星を配置
-        y: Math.random() * LOGICAL_HEIGHT,
+        x: worldX,  // ワールド座標
+        y: Math.random() * LOGICAL_HEIGHT,  // 上下全体に配置
         size: Math.random() * 2 + 0.5,  // 0.5-2.5ピクセル
         brightness: Math.random() * 0.8 + 0.2,  // 0.2-1.0の明度
         twinklePhase: Math.random() * Math.PI * 2  // 瞬きの位相
@@ -231,14 +233,16 @@ export class Cave {
     this.stars.forEach(star => {
       ctx.save();
       
-      // 瞬き効果
-      const twinkle = Math.sin(time * 2 + star.twinklePhase) * 0.3 + 0.7;
+      // より強い瞬き効果（複数の正弦波を組み合わせてキラキラ効果を強化）
+      const twinkle1 = Math.sin(time * 2 + star.twinklePhase) * 0.4 + 0.6;  // 0.2-1.0の振動
+      const twinkle2 = Math.sin(time * 3.5 + star.twinklePhase * 0.7) * 0.3 + 0.5;  // 別の周波数
+      const twinkle = Math.max(twinkle1, twinkle2);  // より明るい方を選択
       const alpha = star.brightness * twinkle;
       
       ctx.globalAlpha = alpha;
       ctx.fillStyle = '#ffffff';
       ctx.shadowColor = '#ffffff';
-      ctx.shadowBlur = star.size * 2;
+      ctx.shadowBlur = star.size * 3;  // グロー効果を強化
       
       // 星を描画（十字形）- スクロールオフセットを考慮
       const x = star.x - this.scrollOffset;
@@ -254,12 +258,13 @@ export class Cave {
         // 縦線
         ctx.moveTo(x, y - size);
         ctx.lineTo(x, y + size);
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 1.5;  // 線を少し太く
         ctx.stroke();
         
-        // 中心の点
+        // 中心の点（より明るく）
+        ctx.globalAlpha = alpha * 1.2;  // さらに明るく
         ctx.beginPath();
-        ctx.arc(x, y, size * 0.3, 0, Math.PI * 2);
+        ctx.arc(x, y, size * 0.5, 0, Math.PI * 2);  // 中心をやや大きく
         ctx.fill();
       }
       
@@ -271,12 +276,12 @@ export class Cave {
    * 星の位置を更新（無限スクロール用）
    */
   _updateStars() {
-    // 画面左端から出た星を右端に移動
+    // 画面左端から出た星を画面全体に再配置
     this.stars.forEach(star => {
       const screenX = star.x - this.scrollOffset;
       if (screenX < -100) {
-        // 星を右端に移動
-        star.x = this.scrollOffset + LOGICAL_WIDTH + Math.random() * 200;
+        // 星をワールド座標で画面全体の右側に撒き直す
+        star.x = this.scrollOffset + Math.random() * (LOGICAL_WIDTH + 200);
         star.y = Math.random() * LOGICAL_HEIGHT;
         star.brightness = Math.random() * 0.8 + 0.2;
         star.twinklePhase = Math.random() * Math.PI * 2;

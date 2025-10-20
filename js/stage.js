@@ -3,7 +3,6 @@
  * distancePx: 1km = 100px (1px = 10m)
  */
 //  { speed: 175, minGap: 340, slopePer100: 25, period: 600, distancePx: 5_000,  colorTop: '#2c425c', colorBot: '#273b53' },
-//f3f4f8
 export const STAGES = [
   // ステージ1: 40km - チュートリアル（暖色系）
   { 
@@ -11,8 +10,7 @@ export const STAGES = [
     minGap: 340, 
     slopePer100: 25, 
     period: 600, 
-    //distancePx: 5_000,  
-    distancePx: 500,  
+    distancePx: 5_000,  
     colorTop: '#235913', 
     colorBot: '#235913',
     colorCorridor: '#d1e8ce'  // 薄い緑の通路
@@ -23,8 +21,7 @@ export const STAGES = [
     minGap: 300, 
     slopePer100: 35, 
     period: 520, 
-    //distancePx: 7_500,  
-    distancePx: 50,  
+    distancePx: 7_500,  
     colorTop: '#968700', 
     colorBot: '#968700',
     colorCorridor: '#efecc2'  // 薄い緑の通路
@@ -35,8 +32,7 @@ export const STAGES = [
     minGap: 260, 
     slopePer100: 45, 
     period: 450, 
-    //distancePx: 10_000, 
-    distancePx: 50, 
+    distancePx: 10_000, 
     colorTop: '#600f10', 
     colorBot: '#600f10',
     colorCorridor: '#b77c7c'  // 薄い赤の通路
@@ -47,8 +43,7 @@ export const STAGES = [
     minGap: 200, 
     slopePer100: 55, 
     period: 390, 
-    //distancePx: 4_000, 
-    distancePx: 50, 
+    distancePx: 4_000, 
     colorTop: '#4a3a2f', 
     colorBot: '#433426',
     colorCorridor: '#666666'  // 明るい通路
