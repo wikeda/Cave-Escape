@@ -67,10 +67,10 @@ export class Cave {
    */
   _generateStars() {
     this.stars = [];
-    const numStars = 120;  // 星の数を増やす
+    const numStars = 80;  // 星の数
     for (let i = 0; i < numStars; i++) {
       this.stars.push({
-        x: Math.random() * (LOGICAL_WIDTH * 3),  // より広い範囲に星を配置
+        x: Math.random() * LOGICAL_WIDTH,  // 画面幅内に星を配置
         y: Math.random() * LOGICAL_HEIGHT,
         size: Math.random() * 2 + 0.5,  // 0.5-2.5ピクセル
         brightness: Math.random() * 0.8 + 0.2,  // 0.2-1.0の明度
@@ -225,6 +225,9 @@ export class Cave {
   _drawStars(ctx) {
     const time = Date.now() * 0.001;  // 現在時刻（秒）
     
+    // 星の無限スクロールを実装
+    this._updateStars();
+    
     this.stars.forEach(star => {
       ctx.save();
       
@@ -242,22 +245,42 @@ export class Cave {
       const y = star.y;
       const size = star.size;
       
-      ctx.beginPath();
-      // 横線
-      ctx.moveTo(x - size, y);
-      ctx.lineTo(x + size, y);
-      // 縦線
-      ctx.moveTo(x, y - size);
-      ctx.lineTo(x, y + size);
-      ctx.lineWidth = 1;
-      ctx.stroke();
-      
-      // 中心の点
-      ctx.beginPath();
-      ctx.arc(x, y, size * 0.3, 0, Math.PI * 2);
-      ctx.fill();
+      // 画面内にある星のみ描画
+      if (x > -50 && x < LOGICAL_WIDTH + 50) {
+        ctx.beginPath();
+        // 横線
+        ctx.moveTo(x - size, y);
+        ctx.lineTo(x + size, y);
+        // 縦線
+        ctx.moveTo(x, y - size);
+        ctx.lineTo(x, y + size);
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        
+        // 中心の点
+        ctx.beginPath();
+        ctx.arc(x, y, size * 0.3, 0, Math.PI * 2);
+        ctx.fill();
+      }
       
       ctx.restore();
+    });
+  }
+
+  /**
+   * 星の位置を更新（無限スクロール用）
+   */
+  _updateStars() {
+    // 画面左端から出た星を右端に移動
+    this.stars.forEach(star => {
+      const screenX = star.x - this.scrollOffset;
+      if (screenX < -100) {
+        // 星を右端に移動
+        star.x = this.scrollOffset + LOGICAL_WIDTH + Math.random() * 200;
+        star.y = Math.random() * LOGICAL_HEIGHT;
+        star.brightness = Math.random() * 0.8 + 0.2;
+        star.twinklePhase = Math.random() * Math.PI * 2;
+      }
     });
   }
 
