@@ -56,14 +56,17 @@ export class UI {
     const y = 8; // 画面上部から少し下
     const x = (this.canvas.width - hudWidth) / 2; // 中央配置
     
+    // HUDの座標を原点(0, 0)に設定
+    ctx.translate(x, y);
+    
     // 宇宙船コックピット風の背景
-    this._drawCockpitBackground(ctx, x, y, hudWidth, hudHeight);
+    this._drawCockpitBackground(ctx, 0, 0, hudWidth, hudHeight);
     
     // スキャンライン効果
-    this._drawScanLines(ctx, x, y, hudWidth, hudHeight);
+    this._drawScanLines(ctx, 0, 0, hudWidth, hudHeight);
     
     // 青いグロー効果
-    this._drawGlowEffect(ctx, x, y, hudWidth, hudHeight);
+    this._drawGlowEffect(ctx, 0, 0, hudWidth, hudHeight);
     
     // テキストの描画（宇宙船の計器盤風）
     this._drawCockpitText(ctx, stageIndex, distancePx, hudWidth, hudHeight);
