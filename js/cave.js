@@ -233,14 +233,16 @@ export class Cave {
     this.stars.forEach(star => {
       ctx.save();
       
-      // 瞬き効果
-      const twinkle = Math.sin(time * 2 + star.twinklePhase) * 0.3 + 0.7;
+      // より強い瞬き効果（複数の正弦波を組み合わせてキラキラ効果を強化）
+      const twinkle1 = Math.sin(time * 2 + star.twinklePhase) * 0.4 + 0.6;  // 0.2-1.0の振動
+      const twinkle2 = Math.sin(time * 3.5 + star.twinklePhase * 0.7) * 0.3 + 0.5;  // 別の周波数
+      const twinkle = Math.max(twinkle1, twinkle2);  // より明るい方を選択
       const alpha = star.brightness * twinkle;
       
       ctx.globalAlpha = alpha;
       ctx.fillStyle = '#ffffff';
       ctx.shadowColor = '#ffffff';
-      ctx.shadowBlur = star.size * 2;
+      ctx.shadowBlur = star.size * 3;  // グロー効果を強化
       
       // 星を描画（十字形）- スクロールオフセットを考慮
       const x = star.x - this.scrollOffset;
@@ -256,12 +258,13 @@ export class Cave {
         // 縦線
         ctx.moveTo(x, y - size);
         ctx.lineTo(x, y + size);
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 1.5;  // 線を少し太く
         ctx.stroke();
         
-        // 中心の点
+        // 中心の点（より明るく）
+        ctx.globalAlpha = alpha * 1.2;  // さらに明るく
         ctx.beginPath();
-        ctx.arc(x, y, size * 0.3, 0, Math.PI * 2);
+        ctx.arc(x, y, size * 0.5, 0, Math.PI * 2);  // 中心をやや大きく
         ctx.fill();
       }
       
