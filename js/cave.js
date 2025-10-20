@@ -63,15 +63,17 @@ export class Cave {
   }
 
   /**
-   * 星を生成
+   * 星を初期化（夜空モード用）
    */
   _generateStars() {
     this.stars = [];
-    const numStars = 80;  // 星の数
+    const numStars = 150;  // 星の数を増加
     for (let i = 0; i < numStars; i++) {
+      // スクロールオフセットを考慮してワールド座標で配置
+      const worldX = this.scrollOffset + Math.random() * LOGICAL_WIDTH;
       this.stars.push({
-        x: Math.random() * LOGICAL_WIDTH,  // 画面幅内に星を配置
-        y: Math.random() * LOGICAL_HEIGHT,
+        x: worldX,  // ワールド座標
+        y: Math.random() * LOGICAL_HEIGHT,  // 上下全体に配置
         size: Math.random() * 2 + 0.5,  // 0.5-2.5ピクセル
         brightness: Math.random() * 0.8 + 0.2,  // 0.2-1.0の明度
         twinklePhase: Math.random() * Math.PI * 2  // 瞬きの位相
@@ -271,12 +273,12 @@ export class Cave {
    * 星の位置を更新（無限スクロール用）
    */
   _updateStars() {
-    // 画面左端から出た星を右端に移動
+    // 画面左端から出た星を画面全体に再配置
     this.stars.forEach(star => {
       const screenX = star.x - this.scrollOffset;
       if (screenX < -100) {
-        // 星を右端に移動
-        star.x = this.scrollOffset + LOGICAL_WIDTH + Math.random() * 200;
+        // 星をワールド座標で画面全体の右側に撒き直す
+        star.x = this.scrollOffset + Math.random() * (LOGICAL_WIDTH + 200);
         star.y = Math.random() * LOGICAL_HEIGHT;
         star.brightness = Math.random() * 0.8 + 0.2;
         star.twinklePhase = Math.random() * Math.PI * 2;
