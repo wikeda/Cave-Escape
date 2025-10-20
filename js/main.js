@@ -2,6 +2,16 @@
 import { Game } from './game.js';
 import { UI } from './ui.js';
 
+// ビューポート高さをCSS変数に設定（横画面スマホでの100vh問題対策）
+function updateViewportHeight() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+updateViewportHeight();
+window.addEventListener('resize', updateViewportHeight);
+window.addEventListener('orientationchange', updateViewportHeight);
+
 // DOM要素の取得
 const canvas = document.getElementById('game');
 const overlay = document.getElementById('overlay');

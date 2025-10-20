@@ -1,14 +1,18 @@
+:root {
+  --vh: 1vh; /* JS が上書きする前のフォールバック */
+}
+
 html, body {
   margin: 0;
   padding: 0;
   background: #0c0f13;
   color: #e6edf3;
-  height: 100%;
+  min-height: calc(var(--vh) * 100);
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  padding: 12px;
+  padding: clamp(4px, (calc(var(--vh) * 100 - 450px) / 2), 12px);
   font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans JP", Helvetica, Arial, sans-serif;
 }
 
@@ -17,19 +21,24 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: min(800px, 100vw - 24px, calc((100vh - 24px) * (16 / 9)));
-  max-width: 100%;
+  width: min(
+    800px,
+    calc(100vw - 16px),
+    calc((var(--vh) * 100 - 16px) * (16 / 9))
+  );
+  max-height: calc(var(--vh) * 100 - 16px);
   aspect-ratio: 16 / 9;
 }
 
 #game {
   width: 100%;
-  height: auto;
+  height: 100%;
   image-rendering: pixelated;
   background: linear-gradient(#05070a, #0c0f13);
   box-shadow: 0 10px 40px rgba(0,0,0,0.6);
   border-radius: 6px;
   touch-action: none;
+  object-fit: contain;
 }
 
 #overlay {
