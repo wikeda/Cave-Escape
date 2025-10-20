@@ -10,7 +10,7 @@ export const STAGES = [
     minGap: 340, 
     slopePer100: 25, 
     period: 600, 
-    distancePx: 5_000,  
+    distancePx: 4_000,  
     colorTop: '#235913', 
     colorBot: '#235913',
     colorCorridor: '#d1e8ce'  // 薄い緑の通路
@@ -21,7 +21,7 @@ export const STAGES = [
     minGap: 300, 
     slopePer100: 35, 
     period: 520, 
-    distancePx: 7_500,  
+    distancePx: 7_000,  
     colorTop: '#968700', 
     colorBot: '#968700',
     colorCorridor: '#efecc2'  // 薄い緑の通路
