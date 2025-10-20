@@ -221,14 +221,14 @@ export class Game {
 
     let speed = STAGES[this.stageIndex].speed;
     
-    // ステージ5の最後20kmでスピード減速
+    // ステージ5の最後20kmでスピード減速（2,000px = 20km）
     if (this.stageIndex === 4 && this.speedSlowdownMode) {
-      const stage5Total = STAGES[4].distancePx;  // 150km
-      const slowdownStart = stage5Total - 20000;  // 130km以降
+      const stage5Total = STAGES[4].distancePx;  // 150km = 15,000px
       const remainingDistance = stage5Total - this.distancePx;
+      const slowdownDistance = 2000;  // 最後の20km = 2,000px
       
-      if (remainingDistance <= 20000) {  // 最後の20km
-        const slowdownProgress = (20000 - remainingDistance) / 20000;  // 0-1の進行度
+      if (remainingDistance <= slowdownDistance) {  // 最後の20km
+        const slowdownProgress = (slowdownDistance - remainingDistance) / slowdownDistance;  // 0-1の進行度
         const originalSpeed = STAGES[4].speed;  // 800
         const finalSpeed = 100;
         
