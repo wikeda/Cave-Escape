@@ -188,8 +188,8 @@ export class UI {
     const centerX = width / 2;
     const centerY = height / 2;
     
-    // フォント設定（より大きいサイズ）
-    ctx.font = 'bold 14px "Courier New", monospace';
+    // フォント設定（大きいサイズ）
+    ctx.font = 'bold 16px "Courier New", monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     
@@ -201,13 +201,13 @@ export class UI {
     ctx.fillStyle = consoleGreen;
     ctx.shadowColor = shadowGreen;
     ctx.shadowBlur = 2;
-    ctx.fillText(`ST${stageIndex + 1}`, centerX - 45, centerY);
+    ctx.fillText(`Stage:${stageIndex + 1}`, centerX - 50, centerY);
     
     // 距離表示
     ctx.fillStyle = consoleGreen;
     ctx.shadowColor = shadowGreen;
     ctx.shadowBlur = 2;
-    ctx.fillText(`${formatKm(distancePx)}Km`, centerX + 45, centerY);
+    ctx.fillText(`${formatKm(distancePx)}Km`, centerX + 50, centerY);
     
     // 中央の区切り線
     ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
