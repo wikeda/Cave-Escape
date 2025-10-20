@@ -143,7 +143,7 @@ export class UI {
    */
   _drawScanLines(ctx, x, y, width, height) {
     const time = Date.now() * 0.001;
-    const scanLineY = y + (time * 12.5) % height;  // 元の50から12.5に変更（4倍遅く）
+    const scanLineY = y + (time * 5) % height;  // 元の12.5から5に変更
     
     ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
     ctx.lineWidth = 1;
