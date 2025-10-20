@@ -192,7 +192,7 @@ function frame(now) {
     const distance = game.formattedCurrentDistance();
     setOverlay([
       `<div class="overlay-panel">
-        <h1>全ステージクリア！</h1>
+        <h1>🎉 全ステージクリア！ 🎉</h1>
         <p>おめでとうございます！</p>
         <p>クリア距離: ${distance} km</p>
         <div class="overlay-button-group">

@@ -173,6 +173,21 @@ export class Game {
       this.state = 'gameclear';
       this.rocketVisible = true;
       this.particles.clear();
+      
+      // クリア演出：花火とキラキラエフェクト
+      const centerX = LOGICAL_WIDTH / 2;
+      const centerY = LOGICAL_HEIGHT / 2;
+      
+      // 画面全体に花火を打ち上げ
+      this.particles.fireworks(centerX, centerY);
+      this.particles.fireworks(centerX - 100, centerY - 50);
+      this.particles.fireworks(centerX + 100, centerY - 50);
+      this.particles.fireworks(centerX - 150, centerY + 30);
+      this.particles.fireworks(centerX + 150, centerY + 30);
+      
+      // ロケット周辺にキラキラエフェクト
+      this.particles.sparkles(this.rocket.x, this.rocket.y);
+      
       this.recordBestDistance();
       soundManager.stopEngine();  // エンジン音を停止
       soundManager.playStageClear();
