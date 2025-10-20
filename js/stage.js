@@ -59,7 +59,7 @@ export const STAGES = [
     minGap: 250, 
     slopePer100: 700, 
     period: 900, 
-    distancePx: 5_000,  
+    distancePx: 15_000,  
     colorTop: '#470093', 
     colorBot: '#470093',
     colorCorridor: '#6f4399'  // 薄い紫の通路
