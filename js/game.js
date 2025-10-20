@@ -153,9 +153,6 @@ export class Game {
     soundManager.stopEngine();  // ゲーム開始時にエンジン音を確実に停止
     soundManager.playStart();
     if (navigator.vibrate) navigator.vibrate([15, 30, 15]);
-    
-    // デバッグ用：無敵モードを有効にする
-    this.setInvincibleMode(true);
   }
 
   restart() {
