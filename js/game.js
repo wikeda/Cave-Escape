@@ -275,7 +275,7 @@ export class Game {
     }
 
     // ステージ5の最後20kmで夜空モードとスピード減速モードに切り替え
-    if (this.stageIndex === 4 && this.distancePx >= 5000) {  // ステージ5（インデックス4）で50km以降（デバッグ用）
+    if (this.stageIndex === 4 && this.distancePx >= 13000) {  // ステージ5（インデックス4）で130km以降（最後20km）
       if (!this.nightSkyMode) {
         this.nightSkyMode = true;
         this.cave.setNightSkyMode(true);
@@ -289,6 +289,11 @@ export class Game {
       this.speedSlowdownMode = false;
     }
 
+    // スクロールオフセットを更新（夜空モード時）
+    if (this.nightSkyMode) {
+      this.cave.setScrollOffset(this.distancePx);
+    }
+    
     this.cave.draw(ctx);
     if (this.rocketVisible) this.rocket.draw(ctx);
     this.particles.draw(ctx);

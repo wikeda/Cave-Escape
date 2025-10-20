@@ -17,6 +17,7 @@ export class Cave {
     this.safeDistPx = safeDistPx;  // 初期距離での中心をまっすぐに保つ
     this.nightSkyMode = false;  // 夜空モードフラグ
     this.stars = [];  // 星のデータ
+    this.scrollOffset = 0;  // スクロールオフセット
     const pat = this._createRockPattern();
     this.pattern = pat.pattern;
     this.patternSize = pat.size;
@@ -43,6 +44,14 @@ export class Cave {
   setParams(params) { this.params = params; }
 
   /**
+   * スクロールオフセットを設定
+   * @param {number} offset - スクロールオフセット
+   */
+  setScrollOffset(offset) {
+    this.scrollOffset = offset;
+  }
+
+  /**
    * 夜空モードを設定
    * @param {boolean} enabled - 夜空モードの有効/無効
    */
@@ -58,10 +67,10 @@ export class Cave {
    */
   _generateStars() {
     this.stars = [];
-    const numStars = 80;  // 星の数
+    const numStars = 120;  // 星の数を増やす
     for (let i = 0; i < numStars; i++) {
       this.stars.push({
-        x: Math.random() * LOGICAL_WIDTH,
+        x: Math.random() * (LOGICAL_WIDTH * 3),  // より広い範囲に星を配置
         y: Math.random() * LOGICAL_HEIGHT,
         size: Math.random() * 2 + 0.5,  // 0.5-2.5ピクセル
         brightness: Math.random() * 0.8 + 0.2,  // 0.2-1.0の明度
@@ -228,8 +237,8 @@ export class Cave {
       ctx.shadowColor = '#ffffff';
       ctx.shadowBlur = star.size * 2;
       
-      // 星を描画（十字形）
-      const x = star.x;
+      // 星を描画（十字形）- スクロールオフセットを考慮
+      const x = star.x - this.scrollOffset;
       const y = star.y;
       const size = star.size;
       
