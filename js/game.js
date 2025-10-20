@@ -47,6 +47,7 @@ export class Game {
     this.hitFlash = 0;  // ヒットフラッシュ
     this.rocketVisible = true;  // ロケット表示フラグ
     this.nightSkyMode = false;  // 夜空モードフラグ
+    this.invincibleMode = false;  // 無敵モードフラグ
 
     // ゲームオブジェクト
     this.rocket = null;
@@ -121,6 +122,14 @@ export class Game {
     }
   }
 
+  /**
+   * 無敵モードを設定（デバッグ用）
+   * @param {boolean} enabled - 無敵モードの有効/無効
+   */
+  setInvincibleMode(enabled) {
+    this.invincibleMode = enabled;
+  }
+
 
   start() {
     this.stageIndex = 0;
@@ -131,6 +140,9 @@ export class Game {
     soundManager.stopEngine();  // ゲーム開始時にエンジン音を確実に停止
     soundManager.playStart();
     if (navigator.vibrate) navigator.vibrate([15, 30, 15]);
+    
+    // デバッグ用：無敵モードを有効にする
+    this.setInvincibleMode(true);
   }
 
   restart() {
@@ -195,7 +207,7 @@ export class Game {
     );
 
     const inGrace = this.sinceStageStart < this.graceTime;
-    if (!inGrace && this.cave.collides(this.rocket.polygon())) {
+    if (!inGrace && !this.invincibleMode && this.cave.collides(this.rocket.polygon())) {
       this.state = 'gameover';
       if (this.rocketVisible) {
         this.particles.explosion(this.rocket.x, this.rocket.y);
@@ -237,7 +249,7 @@ export class Game {
     }
 
     // ステージ5の最後20kmで夜空モードに切り替え
-    if (this.stageIndex === 4 && this.distancePx >= 5000) {  // ステージ5（インデックス4）で50km以降（テスト用）
+    if (this.stageIndex === 4 && this.distancePx >= 13000) {  // ステージ5（インデックス4）で130km以降
       if (!this.nightSkyMode) {
         this.nightSkyMode = true;
         this.cave.setNightSkyMode(true);
