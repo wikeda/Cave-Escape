@@ -46,6 +46,7 @@ export class Game {
     this.particles = new ParticleSystem();  // パーティクルシステム
     this.hitFlash = 0;  // ヒットフラッシュ
     this.rocketVisible = true;  // ロケット表示フラグ
+    this.nightSkyMode = false;  // 夜空モードフラグ
 
     // ゲームオブジェクト
     this.rocket = null;
@@ -233,6 +234,17 @@ export class Game {
       ctx.fillStyle = corridorPattern;
       ctx.fillRect(0, 0, LOGICAL_WIDTH, LOGICAL_HEIGHT);
       ctx.restore();
+    }
+
+    // ステージ5の最後20kmで夜空モードに切り替え
+    if (this.stageIndex === 4 && this.distancePx >= 13000) {  // ステージ5（インデックス4）で130km以降
+      if (!this.nightSkyMode) {
+        this.nightSkyMode = true;
+        this.cave.setNightSkyMode(true);
+      }
+    } else if (this.nightSkyMode) {
+      this.nightSkyMode = false;
+      this.cave.setNightSkyMode(false);
     }
 
     this.cave.draw(ctx);

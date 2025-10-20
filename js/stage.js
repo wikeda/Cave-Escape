@@ -11,7 +11,8 @@ export const STAGES = [
     minGap: 340, 
     slopePer100: 25, 
     period: 600, 
-    distancePx: 5_000,  
+    //distancePx: 5_000,  
+    distancePx: 500,  
     colorTop: '#235913', 
     colorBot: '#235913',
     colorCorridor: '#d1e8ce'  // 薄い緑の通路
@@ -22,7 +23,8 @@ export const STAGES = [
     minGap: 300, 
     slopePer100: 35, 
     period: 520, 
-    distancePx: 7_500,  
+    //distancePx: 7_500,  
+    distancePx: 50,  
     colorTop: '#968700', 
     colorBot: '#968700',
     colorCorridor: '#efecc2'  // 薄い緑の通路
@@ -33,7 +35,8 @@ export const STAGES = [
     minGap: 260, 
     slopePer100: 45, 
     period: 450, 
-    distancePx: 10_000, 
+    //distancePx: 10_000, 
+    distancePx: 50, 
     colorTop: '#600f10', 
     colorBot: '#600f10',
     colorCorridor: '#b77c7c'  // 薄い赤の通路
@@ -44,7 +47,8 @@ export const STAGES = [
     minGap: 200, 
     slopePer100: 55, 
     period: 390, 
-    distancePx: 4_000, 
+    //distancePx: 4_000, 
+    distancePx: 50, 
     colorTop: '#4a3a2f', 
     colorBot: '#433426',
     colorCorridor: '#666666'  // 明るい通路
@@ -55,7 +59,7 @@ export const STAGES = [
     minGap: 250, 
     slopePer100: 700, 
     period: 900, 
-    distancePx: 15_000,  
+    distancePx: 5_000,  
     colorTop: '#470093', 
     colorBot: '#470093',
     colorCorridor: '#6f4399'  // 薄い紫の通路

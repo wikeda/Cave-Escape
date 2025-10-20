@@ -15,6 +15,8 @@ export class Cave {
     this.total = 0;  // ノイズ位相用の総距離（ピクセル）
     this.seed = Math.random() * 10000;  // ランダムシード
     this.safeDistPx = safeDistPx;  // 初期距離での中心をまっすぐに保つ
+    this.nightSkyMode = false;  // 夜空モードフラグ
+    this.stars = [];  // 星のデータ
     const pat = this._createRockPattern();
     this.pattern = pat.pattern;
     this.patternSize = pat.size;
@@ -39,6 +41,34 @@ export class Cave {
   }
 
   setParams(params) { this.params = params; }
+
+  /**
+   * 夜空モードを設定
+   * @param {boolean} enabled - 夜空モードの有効/無効
+   */
+  setNightSkyMode(enabled) {
+    this.nightSkyMode = enabled;
+    if (enabled && this.stars.length === 0) {
+      this._generateStars();
+    }
+  }
+
+  /**
+   * 星を生成
+   */
+  _generateStars() {
+    this.stars = [];
+    const numStars = 80;  // 星の数
+    for (let i = 0; i < numStars; i++) {
+      this.stars.push({
+        x: Math.random() * LOGICAL_WIDTH,
+        y: Math.random() * LOGICAL_HEIGHT,
+        size: Math.random() * 2 + 0.5,  // 0.5-2.5ピクセル
+        brightness: Math.random() * 0.8 + 0.2,  // 0.2-1.0の明度
+        twinklePhase: Math.random() * Math.PI * 2  // 瞬きの位相
+      });
+    }
+  }
 
   _centerYAt(x) {
     const travel = this.total + x;
@@ -141,28 +171,85 @@ export class Cave {
 
   draw(ctx) {
     ctx.save();
-    const baseTop = this.params.colorTop || '#2c425c';
-    const baseBot = this.params.colorBot || '#273b53';
+    
+    if (this.nightSkyMode) {
+      // 夜空モード：壁を描画せず、夜空の背景と星を描画
+      this._drawNightSky(ctx);
+    } else {
+      // 通常モード：洞窟の壁を描画
+      const baseTop = this.params.colorTop || '#2c425c';
+      const baseBot = this.params.colorBot || '#273b53';
 
-    this._fillArea(ctx, true, baseTop);
-    this._fillArea(ctx, false, baseBot);
+      this._fillArea(ctx, true, baseTop);
+      this._fillArea(ctx, false, baseBot);
 
-    // リム（太い縁）の描画を無効化
-    // const rimThickness = 14;
-    // this._drawRim(ctx, this.top, +1, rimThickness, baseTop);
-    // this._drawRim(ctx, this.bot, -1, rimThickness, baseBot);
+      // エッジの線を描画
+      this._strokeEdge(ctx, this.top, baseTop);  // 上の壁のエッジ線
+      this._strokeEdge(ctx, this.bot, baseBot);  // 下の壁のエッジ線（上の壁と同じ明るさ）
 
-    // エッジの線を描画
-    this._strokeEdge(ctx, this.top, baseTop);  // 上の壁のエッジ線
-    this._strokeEdge(ctx, this.bot, baseBot);  // 下の壁のエッジ線（上の壁と同じ明るさ）
-
-    // ハイライト線を無効化
-    // const strokeHighlight = 'rgba(210, 230, 255, 0.25)';
-    // this._strokeHighlight(ctx, this.top, strokeHighlight);
-    // this._strokeHighlight(ctx, this.bot, strokeHighlight);
-
-    this._drawInnerShadow(ctx);
+      this._drawInnerShadow(ctx);
+    }
+    
     ctx.restore();
+  }
+
+  /**
+   * 夜空を描画
+   */
+  _drawNightSky(ctx) {
+    // 夜空の背景（紺色のグラデーション）
+    const gradient = ctx.createLinearGradient(0, 0, 0, LOGICAL_HEIGHT);
+    gradient.addColorStop(0, '#0a0a2e');  // 濃い紺
+    gradient.addColorStop(0.5, '#16213e');  // 中間の紺
+    gradient.addColorStop(1, '#0f3460');  // やや明るい紺
+    
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, LOGICAL_WIDTH, LOGICAL_HEIGHT);
+    
+    // 星を描画
+    this._drawStars(ctx);
+  }
+
+  /**
+   * 星を描画（瞬き効果付き）
+   */
+  _drawStars(ctx) {
+    const time = Date.now() * 0.001;  // 現在時刻（秒）
+    
+    this.stars.forEach(star => {
+      ctx.save();
+      
+      // 瞬き効果
+      const twinkle = Math.sin(time * 2 + star.twinklePhase) * 0.3 + 0.7;
+      const alpha = star.brightness * twinkle;
+      
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = '#ffffff';
+      ctx.shadowColor = '#ffffff';
+      ctx.shadowBlur = star.size * 2;
+      
+      // 星を描画（十字形）
+      const x = star.x;
+      const y = star.y;
+      const size = star.size;
+      
+      ctx.beginPath();
+      // 横線
+      ctx.moveTo(x - size, y);
+      ctx.lineTo(x + size, y);
+      // 縦線
+      ctx.moveTo(x, y - size);
+      ctx.lineTo(x, y + size);
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      
+      // 中心の点
+      ctx.beginPath();
+      ctx.arc(x, y, size * 0.3, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.restore();
+    });
   }
 
   _fillArea(ctx, isTop, baseColor) {
