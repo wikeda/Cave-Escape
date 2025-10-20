@@ -82,16 +82,16 @@ export class UI {
   _drawCockpitBackground(ctx, x, y, width, height) {
     // メインの背景（半透明の黒）
     const gradient = ctx.createLinearGradient(x, y, x, y + height);
-    gradient.addColorStop(0, 'rgba(0, 20, 40, 0.95)');
-    gradient.addColorStop(0.5, 'rgba(0, 30, 60, 0.9)');
-    gradient.addColorStop(1, 'rgba(0, 40, 80, 0.85)');
+    gradient.addColorStop(0, 'rgba(0, 20, 20, 0.95)');
+    gradient.addColorStop(0.5, 'rgba(0, 30, 30, 0.9)');
+    gradient.addColorStop(1, 'rgba(0, 40, 40, 0.85)');
     
     ctx.fillStyle = gradient;
     ctx.fillRect(x, y, width, height);
     
-    // 上部の境界線（青いグロー）
-    ctx.strokeStyle = 'rgba(0, 150, 255, 0.8)';
-    ctx.lineWidth = 2;
+    // 上部の境界線（緑のグロー）
+    ctx.strokeStyle = 'rgba(0, 255, 0, 0.8)';
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(x, y + height);
     ctx.lineTo(x + width, y + height);
@@ -110,7 +110,7 @@ export class UI {
    * @param {number} height - 高さ
    */
   _drawGridPattern(ctx, x, y, width, height) {
-    ctx.strokeStyle = 'rgba(0, 100, 200, 0.1)';
+    ctx.strokeStyle = 'rgba(0, 100, 0, 0.1)';
     ctx.lineWidth = 0.5;
     
     // 縦線
@@ -140,9 +140,9 @@ export class UI {
    */
   _drawScanLines(ctx, x, y, width, height) {
     const time = Date.now() * 0.001;
-    const scanLineY = y + (time * 50) % height;
+    const scanLineY = y + (time * 12.5) % height;  // 元の50から12.5に変更（4倍遅く）
     
-    ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)';
+    ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(x, scanLineY);
@@ -160,16 +160,16 @@ export class UI {
    */
   _drawGlowEffect(ctx, x, y, width, height) {
     // 外側のグロー
-    ctx.shadowColor = 'rgba(0, 150, 255, 0.5)';
-    ctx.shadowBlur = 10;
-    ctx.strokeStyle = 'rgba(0, 150, 255, 0.3)';
-    ctx.lineWidth = 1;
+    ctx.shadowColor = 'rgba(0, 255, 0, 0.5)';
+    ctx.shadowBlur = 8;
+    ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
+    ctx.lineWidth = 0.8;
     ctx.strokeRect(x, y, width, height);
     
     // 内側のグロー
     ctx.shadowBlur = 0;
-    ctx.strokeStyle = 'rgba(0, 200, 255, 0.6)';
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(0, 255, 0, 0.5)';
+    ctx.lineWidth = 0.8;
     ctx.strokeRect(x + 1, y + 1, width - 2, height - 2);
   }
 
@@ -185,29 +185,33 @@ export class UI {
     const centerX = width / 2;
     const centerY = height / 2;
     
-    // フォント設定（小さめのモノスペース風）
-    ctx.font = 'bold 12px "Courier New", monospace';
+    // フォント設定（より小さいサイズ）
+    ctx.font = 'bold 10px "Courier New", monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     
+    // コンソール風の緑色（#00FF00）
+    const consoleGreen = 'rgba(0, 255, 0, 0.95)';
+    const shadowGreen = 'rgba(0, 255, 0, 0.4)';
+    
     // ステージ表示
-    ctx.fillStyle = 'rgba(0, 255, 255, 0.9)';
-    ctx.shadowColor = 'rgba(0, 255, 255, 0.5)';
+    ctx.fillStyle = consoleGreen;
+    ctx.shadowColor = shadowGreen;
     ctx.shadowBlur = 2;
-    ctx.fillText(`STAGE ${stageIndex + 1}`, centerX - 55, centerY);
+    ctx.fillText(`ST${stageIndex + 1}`, centerX - 45, centerY);
     
     // 距離表示
-    ctx.fillStyle = 'rgba(0, 200, 255, 0.9)';
-    ctx.shadowColor = 'rgba(0, 200, 255, 0.5)';
+    ctx.fillStyle = consoleGreen;
+    ctx.shadowColor = shadowGreen;
     ctx.shadowBlur = 2;
-    ctx.fillText(`DIST ${formatKm(distancePx)} KM`, centerX + 55, centerY);
+    ctx.fillText(`${formatKm(distancePx)}Km`, centerX + 45, centerY);
     
     // 中央の区切り線
-    ctx.strokeStyle = 'rgba(0, 150, 255, 0.4)';
+    ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
     ctx.lineWidth = 0.5;
     ctx.beginPath();
-    ctx.moveTo(centerX, centerY - 12);
-    ctx.lineTo(centerX, centerY + 12);
+    ctx.moveTo(centerX, centerY - 10);
+    ctx.lineTo(centerX, centerY + 10);
     ctx.stroke();
     
     // ステータスインジケーター
@@ -221,17 +225,17 @@ export class UI {
    * @param {number} centerY - 中央Y座標
    */
   _drawStatusIndicators(ctx, centerX, centerY) {
-    // 左側のインジケーター
+    // 左側のインジケーター（緑）
     ctx.fillStyle = 'rgba(0, 255, 0, 0.8)';
     ctx.shadowBlur = 0;
     ctx.beginPath();
-    ctx.arc(centerX - 75, centerY, 2, 0, Math.PI * 2);
+    ctx.arc(centerX - 70, centerY, 1.5, 0, Math.PI * 2);
     ctx.fill();
     
-    // 右側のインジケーター
-    ctx.fillStyle = 'rgba(255, 255, 0, 0.8)';
+    // 右側のインジケーター（緑）
+    ctx.fillStyle = 'rgba(0, 255, 0, 0.8)';
     ctx.beginPath();
-    ctx.arc(centerX + 75, centerY, 2, 0, Math.PI * 2);
+    ctx.arc(centerX + 70, centerY, 1.5, 0, Math.PI * 2);
     ctx.fill();
   }
 
