@@ -262,7 +262,8 @@ export class Game {
     );
 
     const inGrace = this.sinceStageStart < this.graceTime;
-    if (!inGrace && !this.invincibleMode && this.cave.collides(this.rocket.polygon())) {
+    // 夜空モード中はコリジョン判定を無効化（洞窟ポリラインが不可視なため）
+    if (!inGrace && !this.invincibleMode && !this.nightSkyMode && this.cave.collides(this.rocket.polygon())) {
       this.state = 'gameover';
       if (this.rocketVisible) {
         this.particles.explosion(this.rocket.x, this.rocket.y);
