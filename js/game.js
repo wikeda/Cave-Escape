@@ -53,6 +53,10 @@ export class Game {
     this.nightSkyMode = false;  // 夜空モードフラグ
     this.invincibleMode = false;  // 無敵モードフラグ
     this.speedSlowdownMode = false;  // スピード減速モードフラグ
+    
+    // カウントダウン
+    this.countdownTime = 0;  // カウントダウン経過時間
+    this.countdownActive = false;  // カウントダウン中フラグ
 
     // ゲームオブジェクト
     this.rocket = null;
@@ -153,6 +157,10 @@ export class Game {
     soundManager.stopEngine();  // ゲーム開始時にエンジン音を確実に停止
     soundManager.playStart();
     if (navigator.vibrate) navigator.vibrate([15, 30, 15]);
+    
+    // カウントダウンを開始
+    this.countdownTime = 0;
+    this.countdownActive = true;
   }
 
   restart() {
@@ -202,6 +210,14 @@ export class Game {
 
     this.timeSinceStart += dt;
     this.sinceStageStart += dt;
+    
+    // カウントダウンの更新
+    if (this.countdownActive) {
+      this.countdownTime += dt;
+      if (this.countdownTime >= 4) {  // 3秒 + Go! = 4秒で終了
+        this.countdownActive = false;
+      }
+    }
 
     let speed = STAGES[this.stageIndex].speed;
     
@@ -322,6 +338,50 @@ export class Game {
       ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
       this.hitFlash = Math.max(0, this.hitFlash - 2.5 * (1 / 60));
     }
+    
+    // カウントダウン表示
+    if (this.countdownActive) {
+      this._drawCountdown(ctx);
+    }
+  }
+
+  /**
+   * カウントダウン表示を描画
+   * @param {CanvasRenderingContext2D} ctx - 描画コンテキスト
+   */
+  _drawCountdown(ctx) {
+    ctx.save();
+    
+    const centerX = LOGICAL_WIDTH / 2;
+    const centerY = LOGICAL_HEIGHT / 2;
+    
+    // 表示するテキストを決定
+    let displayText;
+    if (this.countdownTime < 1) {
+      displayText = '3';
+    } else if (this.countdownTime < 2) {
+      displayText = '2';
+    } else if (this.countdownTime < 3) {
+      displayText = '1';
+    } else {
+      displayText = 'Go!';
+    }
+    
+    // 大きなフォントで白色で表示
+    ctx.font = 'bold 120px system-ui, -apple-system, Segoe UI, Roboto, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#ffffff';
+    
+    // 影付きテキスト
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
+    
+    ctx.fillText(displayText, centerX, centerY);
+    
+    ctx.restore();
   }
 
   formattedBestDistance() {
