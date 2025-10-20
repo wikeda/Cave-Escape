@@ -53,7 +53,7 @@ export class UI {
     // 小さなサイズでコンパクトに
     const hudWidth = 300;
     const hudHeight = 40;
-    const y = 8; // 画面上部から少し下
+    const y = 2; // 上部の枠に付ける
     const x = (this.canvas.width - hudWidth) / 2; // 中央配置
     
     // HUDの座標を原点(0, 0)に設定
@@ -188,8 +188,8 @@ export class UI {
     const centerX = width / 2;
     const centerY = height / 2;
     
-    // フォント設定（より小さいサイズ）
-    ctx.font = 'bold 10px "Courier New", monospace';
+    // フォント設定（より大きいサイズ）
+    ctx.font = 'bold 14px "Courier New", monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     
