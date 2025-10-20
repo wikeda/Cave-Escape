@@ -80,8 +80,22 @@ function shareToTwitter() {
   // XのWeb Intent URLを作成
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}&hashtags=${encodeURIComponent(hashtags)}`;
   
-  // 新しいタブでX投稿画面を開く
-  window.open(twitterUrl, '_blank', 'width=600,height=400');
+  // モバイル対応：X投稿画面を開く
+  try {
+    // モバイルデバイスかどうかを判定
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // モバイルの場合：現在のタブで開く
+      window.location.href = twitterUrl;
+    } else {
+      // PCの場合：新しいタブで開く
+      window.open(twitterUrl, '_blank');
+    }
+  } catch (error) {
+    // エラーの場合：フォールバックとして現在のタブで開く
+    window.location.href = twitterUrl;
+  }
 }
 
 function handleAction(action) {
@@ -120,6 +134,16 @@ overlay.addEventListener('click', (e) => {
   const button = e.target.closest('[data-action]');
   if (!button) return;
   e.preventDefault();
+  e.stopPropagation();
+  handleAction(button.getAttribute('data-action'));
+});
+
+// モバイル対応：タッチイベントも追加
+overlay.addEventListener('touchend', (e) => {
+  const button = e.target.closest('[data-action]');
+  if (!button) return;
+  e.preventDefault();
+  e.stopPropagation();
   handleAction(button.getAttribute('data-action'));
 });
 
