@@ -237,7 +237,7 @@ export class Game {
     }
 
     // ステージ5の最後20kmで夜空モードに切り替え
-    if (this.stageIndex === 4 && this.distancePx >= 13000) {  // ステージ5（インデックス4）で130km以降
+    if (this.stageIndex === 4 && this.distancePx >= 5000) {  // ステージ5（インデックス4）で50km以降（テスト用）
       if (!this.nightSkyMode) {
         this.nightSkyMode = true;
         this.cave.setNightSkyMode(true);
