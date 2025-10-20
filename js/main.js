@@ -190,6 +190,14 @@ function frame(now) {
   } else if (game.state === 'gameclear') {
     game.draw();
     const distance = game.formattedCurrentDistance();
+    
+    // パーティクルをオーバーレイの上に描画
+    const ctx = game.ctx;
+    ctx.save();
+    ctx.globalAlpha = 0.8;  // 少し透明にして背景が見えるように
+    game.particles.draw(ctx);
+    ctx.restore();
+    
     setOverlay([
       `<div class="overlay-panel">
         <h1>🎉 全ステージクリア！ 🎉</h1>

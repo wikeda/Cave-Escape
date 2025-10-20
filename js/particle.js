@@ -31,14 +31,14 @@ export class ParticleSystem {
    * @param {number} y - Y座標
    */
   fireworks(x, y) {
-    const N = 120;
+    const N = 150;  // パーティクル数を増加
     for (let i = 0; i < N; i++) {
       const a = Math.random() * Math.PI * 2;
       const sp = 200 + Math.random() * 600; // px/s
       const vx = Math.cos(a) * sp;
       const vy = Math.sin(a) * sp;
-      const life = 1.5 + Math.random() * 1.0;
-      const size = 3 + Math.random() * 4;
+      const life = 3.0 + Math.random() * 2.0;  // 持続時間を延長（3-5秒）
+      const size = 5 + Math.random() * 6;  // サイズを大きく
       // 花火の色（赤、青、緑、黄、紫）
       const colors = [
         { hue: 0, sat: 100, light: 60 },    // 赤
@@ -62,14 +62,14 @@ export class ParticleSystem {
    * @param {number} y - Y座標
    */
   sparkles(x, y) {
-    const N = 60;
+    const N = 80;  // パーティクル数を増加
     for (let i = 0; i < N; i++) {
       const a = Math.random() * Math.PI * 2;
       const sp = 50 + Math.random() * 150; // px/s
       const vx = Math.cos(a) * sp;
       const vy = Math.sin(a) * sp;
-      const life = 2.0 + Math.random() * 1.5;
-      const size = 1 + Math.random() * 2;
+      const life = 4.0 + Math.random() * 2.0;  // 持続時間を延長（4-6秒）
+      const size = 2 + Math.random() * 3;  // サイズを大きく
       const hue = 45 + Math.random() * 30; // 金色系
       const sat = 80 + Math.random() * 20;
       const light = 70 + Math.random() * 30;
